@@ -1,0 +1,50 @@
+@extends('layouts.app')
+
+@section('titre', 'Journal des passages')
+
+@section('contenu')
+
+<h5 class="mb-3">Journal des passages</h5>
+
+<form method="GET" action="{{ route('agent.journal') }}" class="d-flex gap-2 mb-3">
+    <input type="date" name="date" class="form-control" style="max-width: 200px;" value="{{ $date }}">
+    <button type="submit" class="btn btn-primary">Afficher</button>
+</form>
+
+<div class="card mb-3" style="max-width: 300px;">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <span class="text-muted">Passages ce jour</span>
+            <strong>{{ $passages->count() }}</strong>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped bg-white">
+    <thead>
+        <tr>
+            <th>Heure</th>
+            <th>Collaborateur</th>
+            <th>Matricule</th>
+            <th>Plat</th>
+            <th>Numero du ticket</th>
+            <th>Verifie par</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($passages as $passage)
+            <tr>
+                <td>{{ $passage->date_retrait->format('H:i') }}</td>
+                <td>{{ $passage->collaborateur->prenom }} {{ $passage->collaborateur->nom }}</td>
+                <td>{{ $passage->collaborateur->matricule }}</td>
+                <td>{{ $passage->plat->libelle }}</td>
+                <td class="small text-muted">{{ $passage->numero_ticket }}</td>
+                <td>{{ $passage->agentSecurite->prenom ?? '—' }} {{ $passage->agentSecurite->nom ?? '' }}</td>
+            </tr>
+        @empty
+            <tr><td colspan="6" class="text-center text-muted">Aucun passage enregistre pour cette date.</td></tr>
+        @endforelse
+    </tbody>
+</table>
+
+@endsection
