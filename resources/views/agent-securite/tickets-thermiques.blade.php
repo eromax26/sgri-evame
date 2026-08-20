@@ -12,7 +12,7 @@
         .ticket {
             width: 72mm;
             padding: 5mm 3mm;
-            border-bottom: 1px dashed #999;
+            border-bottom: 1px dashed #aab7c4;
             page-break-inside: avoid;
         }
         .ticket .entete {
@@ -22,9 +22,11 @@
         .ticket .entete .societe {
             font-size: 13px;
             font-weight: bold;
+            color: #1a3a5c;
         }
         .ticket .entete .appli {
             font-size: 10px;
+            color: #6b8098;
         }
         .ticket .ligne {
             font-size: 11px;
@@ -36,7 +38,8 @@
             font-weight: bold;
             margin-top: 6px;
             padding-top: 5px;
-            border-top: 1px solid #000;
+            border-top: 1px solid #e31e24;
+            color: #e31e24;
         }
         .barre-outils {
             padding: 15px;

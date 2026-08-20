@@ -2,13 +2,17 @@
 
 @section('titre', 'Departements')
 
+@section('fil')
+    Administration / <strong>Départements</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Départements</h5>
+<h5 class="sg-page-title mb-4">Départements</h5>
 
-<a href="{{ route('departements.create') }}" class="btn btn-success btn-sm mb-3">+ Nouveau departement</a>
+<a href="{{ route('departements.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau departement</a>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Nom</th>
@@ -22,13 +26,13 @@
             <tr>
                 <td>{{ $dep->nom }}</td>
                 <td>{{ $dep->societe->nom }}</td>
-                <td><span class="badge bg-primary">{{ $dep->collaborateurs_count }}</span></td>
+                <td><span class="sg-badge-count">{{ $dep->collaborateurs_count }}</span></td>
                 <td>
-                    <a href="{{ route('departements.edit', $dep) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
+                    <a href="{{ route('departements.edit', $dep) }}" class="btn btn-sm sg-btn-outline">Modifier</a>
                     <form method="POST" action="{{ route('departements.destroy', $dep) }}" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                        <button type="submit" class="btn btn-sm sg-btn-outline-danger">Supprimer</button>
                     </form>
                 </td>
             </tr>

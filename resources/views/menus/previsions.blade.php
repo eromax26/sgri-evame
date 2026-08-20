@@ -8,11 +8,13 @@
 
 @section('contenu')
 
+<h5 class="sg-page-title mb-3">Prévisions de préparation</h5>
+
 <p class="text-muted small">
     Nombre de repas reserves par les collaborateurs pour les 7 prochains jours.
 </p>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Jour</th>
@@ -29,7 +31,7 @@
                     <div class="text-muted small">{{ $p['date_repas']->format('d/m/Y') }}</div>
                 </td>
                 <td>{{ $p['plat']->libelle }}</td>
-                <td><span class="badge bg-primary fs-6">{{ $p['total'] }}</span></td>
+                <td><span class="sg-badge-count" style="font-size: 13px;">{{ $p['total'] }}</span></td>
                 <td class="small text-muted">
                     {{ $p['imprimes'] }} ticket(s) imprime(s)
                     @if ($p['en_attente'] > 0)

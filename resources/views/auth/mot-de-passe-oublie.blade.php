@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>SGRI - Connexion</title>
+    <title>SGRI - Mot de passe oublié</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,9 +21,15 @@
 
     <div class="sg-auth-form-col">
         <div class="sg-auth-card">
-            <p class="sg-eyebrow" style="margin-bottom: 8px;">Accès réservé au personnel</p>
-            <div class="sg-auth-title">Connexion</div>
-            <div class="sg-auth-title-sub">Accédez à votre espace SGRI</div>
+            <p class="sg-eyebrow" style="margin-bottom: 8px;">Récupération d'accès</p>
+            <div class="sg-auth-title">Mot de passe oublié</div>
+            <div class="sg-auth-title-sub">Indiquez votre e-mail pour recevoir un lien de réinitialisation.</div>
+
+            @if (session('success'))
+                <div class="alert alert-success py-2 small">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             @if ($errors->any())
                 <div class="alert alert-danger py-2 small">
@@ -31,24 +37,18 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('password.email') }}">
                 @csrf
-                <div class="mb-3">
-                    <label class="sg-auth-label">Identifiant</label>
-                    <input type="text" name="identifiant" class="form-control sg-auth-input" value="{{ old('identifiant') }}" required autofocus>
+                <div class="mb-4">
+                    <label class="sg-auth-label">Adresse e-mail</label>
+                    <input type="email" name="email" class="form-control sg-auth-input" value="{{ old('email') }}" required autofocus>
                 </div>
-                <div class="mb-2">
-                    <label class="sg-auth-label">Mot de passe</label>
-                    <input type="password" name="password" class="form-control sg-auth-input" required>
-                </div>
-                <div class="mb-4 text-end">
-                    <a href="{{ route('password.request') }}" style="font-size: 12.5px; color: var(--sg-bleu-marine); font-weight: 600;">Mot de passe oublié ?</a>
-                </div>
-                <button type="submit" class="btn sg-auth-btn">Se connecter</button>
+                <button type="submit" class="btn sg-auth-btn">Envoyer le lien de réinitialisation</button>
             </form>
 
             <div class="sg-auth-footer">
-                Compte bloqué après 3 échecs ? Contactez l'Administrateur DSII
+                <a href="{{ route('login') }}" style="color: var(--sg-bleu-marine); font-weight: 600;">Retour à la connexion</a><br><br>
+                Pas d'adresse e-mail enregistrée ? Contactez l'Administrateur DSII.
             </div>
         </div>
     </div>

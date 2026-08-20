@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Gestion des collaborateurs</h5>
+<h5 class="sg-page-title mb-4">Gestion des collaborateurs</h5>
 
-<a href="{{ route('collaborateurs.create') }}" class="btn btn-success btn-sm mb-3">+ Nouveau collaborateur</a>
+<a href="{{ route('collaborateurs.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau collaborateur</a>
 
 <form method="GET" action="{{ route('collaborateurs.index') }}" class="row g-2 mb-3">
     <div class="col-auto">
@@ -33,11 +33,11 @@
         </select>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Rechercher</button>
+        <button type="submit" class="btn sg-btn-navy">Rechercher</button>
     </div>
 </form>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Matricule</th>
@@ -57,20 +57,20 @@
                 <td>{{ $c->fonction ?? '—' }}</td>
                 <td>
                     @if ($c->statut === 'actif')
-                        <span class="badge bg-success">Actif</span>
+                        <span class="sg-pill sg-pill--ok">Actif</span>
                     @elseif ($c->statut === 'inactif')
-                        <span class="badge bg-secondary">Inactif</span>
+                        <span class="sg-pill sg-pill--off">Inactif</span>
                     @else
-                        <span class="badge bg-warning text-dark">Bloque</span>
+                        <span class="sg-pill sg-pill--warn">Bloque</span>
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('collaborateurs.edit', $c) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
-                    <a href="{{ route('roles.attribuerForm', $c) }}" class="btn btn-sm btn-outline-info">Gérer les roles</a>
+                    <a href="{{ route('collaborateurs.edit', $c) }}" class="btn btn-sm sg-btn-outline">Modifier</a>
+                    <a href="{{ route('roles.attribuerForm', $c) }}" class="btn btn-sm sg-btn-outline">Gérer les roles</a>
                     <form method="POST" action="{{ route('collaborateurs.destroy', $c) }}" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Désactiver</button>
+                        <button type="submit" class="btn btn-sm sg-btn-outline-danger">Désactiver</button>
                     </form>
                 </td>
             </tr>

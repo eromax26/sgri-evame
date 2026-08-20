@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Nouveau plat</h5>
+<h5 class="sg-page-title mb-4">Nouveau plat</h5>
 
-<div class="card" style="max-width: 600px;">
+<div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
         <form method="POST" action="{{ route('plats.store') }}">
             @csrf
@@ -37,7 +37,7 @@
                 <input type="number" name="prix" class="form-control" value="{{ old('prix') }}" step="1" min="0">
                 @error('prix') <div class="text-danger small">{{ $message }}</div> @enderror
             </div>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
             <a href="{{ route('plats.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

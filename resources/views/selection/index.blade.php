@@ -8,13 +8,12 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Menu de la semaine - Selectionnez vos repas</h5>
-
+<h5 class="sg-page-title mb-4">Menu de la semaine - Selectionnez vos repas</h5>
 
 <form method="POST" action="{{ route('selection.valider') }}">
     @csrf
 
-    <table class="table table-bordered bg-white">
+    <table class="table table-bordered bg-white sg-table">
         <thead>
             <tr>
                 <th style="width: 40px;"></th>
@@ -38,7 +37,7 @@
     </table>
 
     @if ($lignesDisponibles->isNotEmpty())
-        <button type="submit" class="btn btn-primary">Valider la selection et demander les tickets</button>
+        <button type="submit" class="btn sg-btn-primary">Valider la selection et demander les tickets</button>
     @endif
 </form>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Collaborateur;
 use App\Models\LigneMenu;
+use App\Support\XlsxExporter;
 use Illuminate\Http\Request;
 
 class EtatRhController extends Controller
@@ -33,12 +34,25 @@ class EtatRhController extends Controller
             ];
         }
 
-        $dejaVerrouille = LigneMenu::where('statut', 'consomme')
+        $totalConsomme = LigneMenu::where('statut', 'consomme')
+            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
+            ->count();
+
+        $totalVerrouille = LigneMenu::where('statut', 'consomme')
             ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
             ->where('statut_facturation', 'verrouille')
-            ->exists();
+            ->count();
 
-        return view('etat-rh.index', compact('etat', 'periode', 'dejaVerrouille'));
+        // 'aucun', 'partiel' (des repas verrouilles tardivement peuvent encore arriver) ou 'complet'
+        $statutVerrouillage = match (true) {
+            $totalVerrouille === 0 => 'aucun',
+            $totalVerrouille < $totalConsomme => 'partiel',
+            default => 'complet',
+        };
+
+        $resteAVerrouiller = $totalConsomme - $totalVerrouille;
+
+        return view('etat-rh.index', compact('etat', 'periode', 'statutVerrouillage', 'resteAVerrouiller'));
     }
 
     public function verrouiller(Request $request)
@@ -47,23 +61,56 @@ class EtatRhController extends Controller
             'periode' => ['required', 'date_format:Y-m'],
         ]);
 
-        $dejaVerrouille = LigneMenu::whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$validated['periode']])
-            ->where('statut_facturation', 'verrouille')
-            ->exists();
-
-        if ($dejaVerrouille) {
-            return back()->with('error', 'Cette periode a deja ete verrouillee.');
-        }
-
-        LigneMenu::where('statut', 'consomme')
+        // Verrouille les repas consommes pas encore couverts : permet de rattraper les
+        // retraits tardifs sur une periode deja verrouillee une premiere fois (RG-facturation).
+        $nbVerrouilles = LigneMenu::where('statut', 'consomme')
             ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$validated['periode']])
+            ->where('statut_facturation', '!=', 'verrouille')
             ->update([
                 'periode_facturation' => $validated['periode'],
                 'statut_facturation' => 'verrouille',
             ]);
 
+        if ($nbVerrouilles === 0) {
+            return back()->with('error', 'Rien a verrouiller : tous les repas consommes de cette periode le sont deja.');
+        }
+
         return redirect()->route('etat-rh.index', ['periode' => $validated['periode']])
-            ->with('success', 'Etat mensuel verrouille avec succes.');
+            ->with('success', "{$nbVerrouilles} repas verrouille(s) pour la periode {$validated['periode']}.");
+    }
+
+    public function export(Request $request)
+    {
+        $periode = $request->input('periode', now()->format('Y-m'));
+
+        $lignes = LigneMenu::where('statut', 'consomme')
+            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
+            ->get()
+            ->groupBy('collaborateur_id');
+
+        $lignesExport = [];
+
+        foreach ($lignes as $collaborateurId => $lignesCollaborateur) {
+            $collaborateur = Collaborateur::find($collaborateurId);
+
+            if (! $collaborateur) {
+                continue;
+            }
+
+            $lignesExport[] = [
+                $collaborateur->matricule,
+                $collaborateur->nom,
+                $collaborateur->prenom,
+                $lignesCollaborateur->count(),
+                (float) $lignesCollaborateur->sum('prix'),
+            ];
+        }
+
+        return XlsxExporter::download(
+            "etat-rh-{$periode}.xlsx",
+            ['Matricule', 'Nom', 'Prenom', 'Repas consommes', 'Montant a retenir (FCFA)'],
+            $lignesExport
+        );
     }
 
     public function historique()

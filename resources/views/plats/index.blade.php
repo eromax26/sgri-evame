@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Catalogue des plats</h5>
+<h5 class="sg-page-title mb-4">Catalogue des plats</h5>
 
-<a href="{{ route('plats.create') }}" class="btn btn-success btn-sm mb-3">+ Nouveau plat</a>
+<a href="{{ route('plats.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau plat</a>
 
 <form method="GET" action="{{ route('plats.index') }}" class="row g-2 mb-3">
     <div class="col-auto">
@@ -24,11 +24,11 @@
         </select>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Rechercher</button>
+        <button type="submit" class="btn sg-btn-navy">Rechercher</button>
     </div>
 </form>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Code</th>
@@ -47,16 +47,16 @@
                 <td>{{ $plat->categorie ?? '—' }}</td>
                 <td>{{ $plat->prix ? number_format($plat->prix, 0, ',', ' ') . ' F' : 'A definir' }}</td>
                 <td>
-                    <span class="badge {{ $plat->statut === 'actif' ? 'bg-success' : 'bg-secondary' }}">
+                    <span class="sg-pill {{ $plat->statut === 'actif' ? 'sg-pill--ok' : 'sg-pill--off' }}">
                         {{ ucfirst($plat->statut) }}
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('plats.edit', $plat) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
+                    <a href="{{ route('plats.edit', $plat) }}" class="btn btn-sm sg-btn-outline">Modifier</a>
                     <form method="POST" action="{{ route('plats.destroy', $plat) }}" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Desactiver</button>
+                        <button type="submit" class="btn btn-sm sg-btn-outline-danger">Desactiver</button>
                     </form>
                 </td>
             </tr>

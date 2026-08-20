@@ -8,14 +8,14 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Historique de mes repas</h5>
+<h5 class="sg-page-title mb-4">Historique de mes repas</h5>
 
 <form method="GET" action="{{ route('selection.historique') }}" class="d-flex gap-2 mb-3">
     <input type="month" name="periode" class="form-control" style="max-width: 200px;" value="{{ $periode }}">
-    <button type="submit" class="btn btn-primary">Afficher</button>
+    <button type="submit" class="btn sg-btn-navy">Afficher</button>
 </form>
 
-<div class="card mb-3" style="max-width: 400px;">
+<div class="card sg-card-form shadow-sm border-0 mb-3">
     <div class="card-body">
         <div class="d-flex justify-content-between">
             <span class="text-muted">Repas consommes</span>
@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Date</th>

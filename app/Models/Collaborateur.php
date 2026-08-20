@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use App\Notifications\ReinitialiserMotDePasseNotification;
 
-class Collaborateur extends Authenticatable
+class Collaborateur extends Authenticatable implements CanResetPasswordContract
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, CanResetPassword;
 
     protected $fillable = [
         'matricule',
@@ -75,5 +78,10 @@ class Collaborateur extends Authenticatable
     public function aLeRole(string $libelle): bool
     {
         return $this->roles()->where('libelle', $libelle)->exists();
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ReinitialiserMotDePasseNotification($token));
     }
 }

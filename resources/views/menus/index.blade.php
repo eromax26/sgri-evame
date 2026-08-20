@@ -8,11 +8,11 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Planification des menus</h5>
+<h5 class="sg-page-title mb-4">Planification des menus</h5>
 
-<a href="{{ route('menus.create') }}" class="btn btn-success btn-sm mb-3">+ Nouveau menu de la semaine</a>
+<a href="{{ route('menus.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau menu de la semaine</a>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Semaine</th>
@@ -25,12 +25,19 @@
             <tr>
                 <td>Du {{ $menu->date_debut_semaine->format('d/m/Y') }} au {{ $menu->date_fin_semaine->format('d/m/Y') }}</td>
                 <td>
-                    <span class="badge {{ $menu->estPublie() ? 'bg-success' : 'bg-warning text-dark' }}">
+                    <span class="sg-pill {{ $menu->estPublie() ? 'sg-pill--ok' : 'sg-pill--warn' }}">
                         {{ $menu->estPublie() ? 'Publie' : 'Brouillon' }}
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('menus.edit', $menu) }}" class="btn btn-sm btn-outline-primary">Gerer</a>
+                    <a href="{{ route('menus.edit', $menu) }}" class="btn btn-sm sg-btn-outline">Gerer</a>
+                    @unless ($menu->estPublie())
+                        <form method="POST" action="{{ route('menus.destroy', $menu) }}" class="d-inline" onsubmit="return confirm('Supprimer ce menu brouillon ?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm sg-btn-outline-danger">Supprimer</button>
+                        </form>
+                    @endunless
                 </td>
             </tr>
         @empty

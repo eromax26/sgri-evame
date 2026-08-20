@@ -8,7 +8,9 @@
 
 @section('contenu')
 
-<table class="table table-striped bg-white">
+<h5 class="sg-page-title mb-4">Historique des états</h5>
+
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Periode</th>
@@ -26,8 +28,11 @@
                 <td>{{ $p['nb_repas'] }}</td>
                 <td><strong>{{ number_format($p['montant_total'], 0, ',', ' ') }} F</strong></td>
                 <td>
-                    <a href="{{ route('etat-rh.index', ['periode' => $p['periode']]) }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('etat-rh.index', ['periode' => $p['periode']]) }}" class="btn btn-sm sg-btn-outline">
                         Consulter le détail
+                    </a>
+                    <a href="{{ route('etat-rh.export', ['periode' => $p['periode']]) }}" class="btn btn-sm sg-btn-outline">
+                        Exporter en Excel
                     </a>
                 </td>
             </tr>

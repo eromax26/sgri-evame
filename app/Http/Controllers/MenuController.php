@@ -6,6 +6,7 @@ use App\Models\LigneMenu;
 use App\Models\Menu;
 use App\Models\Plat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class MenuController extends Controller
@@ -31,21 +32,34 @@ class MenuController extends Controller
         $debut = Carbon::parse($validated['date_debut_semaine']);
         $fin = $debut->copy()->addDays(4); // semaine du lundi au vendredi
 
-        $menu = Menu::create([
-            'date_debut_semaine' => $debut,
-            'date_fin_semaine' => $fin,
-            'statut_publication' => 'brouillon',
-        ]);
+        $existant = Menu::whereDate('date_debut_semaine', $debut->toDateString())->first();
 
-        // Cree automatiquement les 5 lignes vides (lundi a vendredi)
-        for ($i = 0; $i < 5; $i++) {
-            LigneMenu::create([
-                'menu_id' => $menu->id,
-                'plat_id' => Plat::where('statut', 'actif')->first()->id ?? null,
-                'date_repas' => $debut->copy()->addDays($i),
-                'statut' => 'prevu',
-            ]);
+        if ($existant) {
+            return redirect()->route('menus.edit', $existant)
+                ->with('error', 'Un menu existe deja pour cette semaine, vous avez ete redirige vers son edition.');
         }
+
+        $platParDefaut = Plat::where('statut', 'actif')->first();
+
+        $menu = DB::transaction(function () use ($debut, $fin, $platParDefaut) {
+            $menu = Menu::create([
+                'date_debut_semaine' => $debut,
+                'date_fin_semaine' => $fin,
+                'statut_publication' => 'brouillon',
+            ]);
+
+            // Cree automatiquement les 5 lignes (lundi a vendredi), sans plat si aucun n'est actif
+            for ($i = 0; $i < 5; $i++) {
+                LigneMenu::create([
+                    'menu_id' => $menu->id,
+                    'plat_id' => $platParDefaut?->id,
+                    'date_repas' => $debut->copy()->addDays($i),
+                    'statut' => 'prevu',
+                ]);
+            }
+
+            return $menu;
+        });
 
         return redirect()->route('menus.edit', $menu)->with('success', 'Menu cree. Choisissez maintenant un plat pour chaque jour.');
     }
@@ -80,6 +94,17 @@ class MenuController extends Controller
         $menu->update(['statut_publication' => 'publie']);
 
         return redirect()->route('menus.index')->with('success', 'Menu publie avec succes.');
+    }
+
+    public function destroy(Menu $menu)
+    {
+        if ($menu->estPublie()) {
+            return back()->with('error', 'Un menu publie ne peut pas etre supprime.');
+        }
+
+        $menu->delete();
+
+        return redirect()->route('menus.index')->with('success', 'Menu brouillon supprime.');
     }
 
     public function previsions()

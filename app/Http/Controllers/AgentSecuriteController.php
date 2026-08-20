@@ -61,59 +61,62 @@ class AgentSecuriteController extends Controller
 
         return view('agent-securite.tickets-a4', compact('tickets'));
     }
-    public function verifierForm()
+    public function verifierForm(Request $request)
     {
-        return view('agent-securite.verifier');
-    }
+        $date = $request->input('date', now()->toDateString());
+        $recherche = $request->input('recherche');
 
-    public function verifier(Request $request)
-    {
-        $validated = $request->validate([
-            'numero_ticket' => ['required', 'string'],
-        ]);
+        $base = LigneMenu::whereIn('statut', ['imprime', 'consomme'])
+            ->whereDate('date_repas', $date);
 
-        $ligne = LigneMenu::with('plat', 'collaborateur')
-            ->where('numero_ticket', $validated['numero_ticket'])
-            ->first();
+        $attendus = (clone $base)->where('statut', 'imprime')->count();
+        $passes = (clone $base)->where('statut', 'consomme')->count();
 
-        if (! $ligne) {
-            return back()->with('resultat', ['type' => 'invalide', 'message' => 'Ticket introuvable.']);
-        }
+        $tickets = (clone $base)
+            ->with('plat', 'collaborateur')
+            ->when($recherche, function ($query) use ($recherche) {
+                $query->where(function ($q) use ($recherche) {
+                    $q->where('numero_ticket', 'like', "%{$recherche}%")
+                        ->orWhereHas('collaborateur', function ($q2) use ($recherche) {
+                            $q2->where('matricule', 'like', "%{$recherche}%")
+                                ->orWhere('nom', 'like', "%{$recherche}%")
+                                ->orWhere('prenom', 'like', "%{$recherche}%");
+                        });
+                });
+            })
+            ->orderByRaw("statut = 'consomme'")
+            ->get();
 
-        if ($ligne->statut === 'consomme') {
-            return back()->with('resultat', ['type' => 'invalide', 'message' => 'Ce ticket a déjà été utilisé.']);
-        }
-
-        if ($ligne->date_repas->toDateString() !== now()->toDateString()) {
-            return back()->with('resultat', ['type' => 'invalide', 'message' => 'Ce ticket n\'est pas valable aujourd\'hui.']);
-        }
-
-        if (! $ligne->collaborateur->estActif()) {
-            return back()->with('resultat', ['type' => 'invalide', 'message' => 'Le collaborateur est inactif (RG03).']);
-        }
-
-       return back()->with('resultat', ['type' => 'valide', 'ligne_id' => $ligne->id]);
+        return view('agent-securite.verifier', compact('date', 'attendus', 'passes', 'tickets'));
     }
 
     public function confirmerRetrait(Request $request)
     {
-    $validated = $request->validate([
-        'ligne_menu_id' => ['required', 'exists:ligne_menus,id'],
-    ]);
+        $validated = $request->validate([
+            'ligne_menu_id' => ['required', 'exists:ligne_menus,id'],
+        ]);
 
-    $ligne = LigneMenu::with('plat')->findOrFail($validated['ligne_menu_id']);
+        $ligne = LigneMenu::with('plat', 'collaborateur')->findOrFail($validated['ligne_menu_id']);
 
-    if ($ligne->statut === 'consomme') {
-        return redirect()->route('agent.verifierForm')->with('resultat', ['type' => 'invalide', 'message' => 'Ce ticket a deja ete utilise.']);
-    }
+        if ($ligne->statut === 'consomme') {
+            return redirect()->route('agent.verifierForm')->with('error', 'Ce ticket a deja ete utilise.');
+        }
 
-    $ligne->update([
-        'date_retrait' => now(),
-        'prix' => $ligne->plat->prix,
-        'statut' => 'consomme',
-    ]);
+        if ($ligne->date_repas->toDateString() !== now()->toDateString()) {
+            return redirect()->route('agent.verifierForm')->with('error', "Ce ticket n'est pas valable aujourd'hui.");
+        }
 
-    return redirect()->route('agent.verifierForm')->with('success', 'Acces autorise. Le collaborateur peut entrer.');
+        if (! $ligne->collaborateur->estActif()) {
+            return redirect()->route('agent.verifierForm')->with('error', 'Le collaborateur est inactif (RG03).');
+        }
+
+        $ligne->update([
+            'date_retrait' => now(),
+            'prix' => $ligne->plat->prix,
+            'statut' => 'consomme',
+        ]);
+
+        return redirect()->route('agent.verifierForm')->with('success', 'Acces autorise. Le collaborateur peut entrer.');
     }
 
     public function journalPassages(Request $request)

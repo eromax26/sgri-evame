@@ -43,6 +43,8 @@ class SelectionController extends Controller
                 $ligne = LigneMenu::where('id', $ligneId)
                     ->where('statut', 'prevu')
                     ->whereNull('collaborateur_id')
+                    ->where('date_repas', '>=', now()->toDateString())
+                    ->whereHas('menu', fn ($q) => $q->where('statut_publication', 'publie'))
                     ->lockForUpdate()
                     ->first();
 

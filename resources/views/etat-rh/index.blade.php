@@ -2,22 +2,31 @@
 
 @section('titre', 'Etat mensuel RH')
 
+@section('fil')
+    Ressources humaines / <strong>Etat mensuel</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Etat mensuel des retenues</h5>
+<h5 class="sg-page-title mb-4">Etat mensuel des retenues</h5>
 
 <form method="GET" action="{{ route('etat-rh.index') }}" class="d-flex gap-2 mb-3">
     <input type="month" name="periode" class="form-control" style="max-width: 200px;" value="{{ $periode }}">
-    <button type="submit" class="btn btn-primary">Afficher</button>
+    <button type="submit" class="btn sg-btn-navy">Afficher</button>
+    @if (count($etat) > 0)
+        <a href="{{ route('etat-rh.export', ['periode' => $periode]) }}" class="btn sg-btn-outline">Exporter en Excel</a>
+    @endif
 </form>
 
-@if ($dejaVerrouille)
-    <span class="badge bg-primary mb-3">Période verrouillée</span>
+@if ($statutVerrouillage === 'complet')
+    <span class="sg-tag mb-3">Période verrouillée</span>
+@elseif ($statutVerrouillage === 'partiel')
+    <span class="sg-pill sg-pill--warn mb-3">Verrouillée partiellement &middot; {{ $resteAVerrouiller }} repas en attente</span>
 @else
-    <span class="badge bg-warning text-dark mb-3">Non verrouillé - brouillon</span>
+    <span class="sg-pill sg-pill--warn mb-3">Non verrouillé - brouillon</span>
 @endif
 
-<table class="table table-bordered bg-white">
+<table class="table table-bordered bg-white sg-table">
     <thead>
         <tr>
             <th>Matricule</th>
@@ -40,14 +49,14 @@
     </tbody>
 </table>
 
-@unless ($dejaVerrouille)
-    @if (count($etat) > 0)
-        <form method="POST" action="{{ route('etat-rh.verrouiller') }}">
-            @csrf
-            <input type="hidden" name="periode" value="{{ $periode }}">
-            <button type="submit" class="btn btn-success">Valider et vérrouiller l'etat</button>
-        </form>
-    @endif
-@endunless
+@if ($statutVerrouillage !== 'complet' && count($etat) > 0)
+    <form method="POST" action="{{ route('etat-rh.verrouiller') }}">
+        @csrf
+        <input type="hidden" name="periode" value="{{ $periode }}">
+        <button type="submit" class="btn sg-btn-primary">
+            {{ $statutVerrouillage === 'partiel' ? "Verrouiller les {$resteAVerrouiller} repas restants" : "Valider et vérrouiller l'etat" }}
+        </button>
+    </form>
+@endif
 
 @endsection

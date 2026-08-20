@@ -2,14 +2,18 @@
 
 @section('titre', 'Planifier le menu')
 
+@section('fil')
+    Restauration / Planification des menus / <strong>Gérer le menu</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-1">Menu du {{ $menu->date_debut_semaine->format('d/m/Y') }} au {{ $menu->date_fin_semaine->format('d/m/Y') }}</h5>
-<span class="badge {{ $menu->estPublie() ? 'bg-success' : 'bg-warning text-dark' }} mb-3">
+<h5 class="sg-page-title mb-2">Menu du {{ $menu->date_debut_semaine->format('d/m/Y') }} au {{ $menu->date_fin_semaine->format('d/m/Y') }}</h5>
+<span class="sg-pill {{ $menu->estPublie() ? 'sg-pill--ok' : 'sg-pill--warn' }} mb-3">
     {{ $menu->estPublie() ? 'Publié' : 'Brouillon' }}
 </span>
 
-<table class="table table-bordered bg-white">
+<table class="table table-bordered bg-white sg-table">
     <thead>
         <tr>
             <th style="width: 180px;">Jour</th>
@@ -29,17 +33,20 @@
                         @csrf
                         @method('PUT')
                         <select name="plat_id" class="form-select" @disabled($menu->estPublie())>
+                            @if (! $ligne->plat_id)
+                                <option value="">-- Choisir un plat --</option>
+                            @endif
                             @foreach ($plats as $plat)
                                 <option value="{{ $plat->id }}" @selected($ligne->plat_id == $plat->id)>{{ $plat->libelle }}</option>
                             @endforeach
                         </select>
                         @unless ($menu->estPublie())
-                            <button type="submit" class="btn btn-outline-primary text-nowrap">Modifier</button>
+                            <button type="submit" class="btn sg-btn-outline text-nowrap">Modifier</button>
                         @endunless
                     </form>
                 </td>
                 <td>
-                    <span class="badge bg-light text-dark">{{ $ligne->statut }}</span>
+                    <span class="sg-pill sg-pill--off">{{ $ligne->statut }}</span>
                 </td>
             </tr>
         @endforeach
@@ -49,10 +56,15 @@
 @unless ($menu->estPublie())
     <form method="POST" action="{{ route('menus.publier', $menu) }}" class="d-inline">
         @csrf
-        <button type="submit" class="btn btn-primary">Publier le menu</button>
+        <button type="submit" class="btn sg-btn-primary">Publier le menu</button>
+    </form>
+    <form method="POST" action="{{ route('menus.destroy', $menu) }}" class="d-inline" onsubmit="return confirm('Supprimer ce menu brouillon ?');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn sg-btn-outline-danger">Supprimer le brouillon</button>
     </form>
 @endunless
 
-<a href="{{ route('menus.index') }}" class="btn btn-outline-secondary">Retour à la liste</a>
+<a href="{{ route('menus.index') }}" class="btn sg-btn-outline">Retour à la liste</a>
 
 @endsection

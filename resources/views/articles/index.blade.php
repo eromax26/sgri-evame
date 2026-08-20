@@ -2,13 +2,17 @@
 
 @section('titre', 'Articles de stock')
 
+@section('fil')
+    Gestion du stock / <strong>Articles</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Articles de stock</h5>
+<h5 class="sg-page-title mb-4">Articles de stock</h5>
 
-<a href="{{ route('articles.create') }}" class="btn btn-success btn-sm mb-3">+ Nouvel article</a>
+<a href="{{ route('articles.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouvel article</a>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Article</th>
@@ -28,13 +32,13 @@
                 <td>{{ $article->seuil_minimum }}</td>
                 <td>
                     @if ($article->seuilAtteint())
-                        <span class="badge bg-danger">Stock faible</span>
+                        <span class="sg-pill sg-pill--danger">Stock faible</span>
                     @else
-                        <span class="badge bg-success">Normal</span>
+                        <span class="sg-pill sg-pill--ok">Normal</span>
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('articles.edit', $article) }}" class="btn btn-sm btn-outline-primary">Modifier</a>
+                    <a href="{{ route('articles.edit', $article) }}" class="btn btn-sm sg-btn-outline">Modifier</a>
                 </td>
             </tr>
         @empty

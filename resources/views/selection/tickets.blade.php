@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Mes tickets</h5>
+<h5 class="sg-page-title mb-4">Mes tickets</h5>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Date du repas</th>
@@ -33,9 +33,9 @@
                 </td>
                 <td>
                     @if ($ticket->statut === 'demande')
-                        <span class="badge bg-warning text-dark">En attente d'impression</span>
+                        <span class="sg-pill sg-pill--warn">En attente d'impression</span>
                     @else
-                        <span class="badge bg-success">Ticket pret a retirer</span>
+                        <span class="sg-pill sg-pill--ok">Ticket pret a retirer</span>
                     @endif
                 </td>
             </tr>

@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Modifier {{ $collaborateur->prenom }} {{ $collaborateur->nom }}</h5>
+<h5 class="sg-page-title mb-4">Modifier {{ $collaborateur->prenom }} {{ $collaborateur->nom }}</h5>
 
-<div class="card" style="max-width: 800px;">
+<div class="card sg-card-form-lg shadow-sm border-0">
     <div class="card-body">
         <form method="POST" action="{{ route('collaborateurs.update', $collaborateur) }}">
             @csrf
@@ -90,7 +90,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            <button type="submit" class="btn sg-btn-primary">Enregistrer les modifications</button>
             <a href="{{ route('collaborateurs.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

@@ -2,11 +2,15 @@
 
 @section('titre', 'Modifier un article')
 
+@section('fil')
+    Gestion du stock / Articles / <strong>Modifier un article</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Modifier {{ $article->libelle }}</h5>
+<h5 class="sg-page-title mb-4">Modifier {{ $article->libelle }}</h5>
 
-<div class="card" style="max-width: 500px;">
+<div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
         <form method="POST" action="{{ route('articles.update', $article) }}">
             @csrf
@@ -31,7 +35,7 @@
                 <input type="text" class="form-control" value="{{ $article->quantite_stock }} {{ $article->unite_mesure }}" disabled>
                 <div class="form-text">Modifiable uniquement via les mouvements de stock.</div>
             </div>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
             <a href="{{ route('articles.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

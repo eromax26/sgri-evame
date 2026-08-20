@@ -2,14 +2,18 @@
 
 @section('titre', 'Demandes de tickets')
 
+@section('fil')
+    Tickets / <strong>Demandes en attente</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Demandes de tickets en attente</h5>
+<h5 class="sg-page-title mb-4">Demandes de tickets en attente</h5>
 
 <form method="POST" action="{{ route('agent.imprimer') }}">
     @csrf
 
-    <table class="table table-bordered bg-white">
+    <table class="table table-bordered bg-white sg-table">
         <thead>
             <tr>
                 <th style="width: 40px;"></th>
@@ -36,10 +40,10 @@
 
     @if ($demandes->isNotEmpty())
         <div class="d-flex gap-2">
-            <button type="submit" name="format" value="thermique" class="btn btn-primary">
+            <button type="submit" name="format" value="thermique" class="btn sg-btn-primary">
                 Imprimer (imprimante thermique)
             </button>
-            <button type="submit" name="format" value="a4" class="btn btn-outline-primary">
+            <button type="submit" name="format" value="a4" class="btn sg-btn-outline">
                 Imprimer (feuille A4)
             </button>
         </div>

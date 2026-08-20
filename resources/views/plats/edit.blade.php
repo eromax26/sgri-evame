@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Modifier {{ $plat->libelle }}</h5>
+<h5 class="sg-page-title mb-4">Modifier {{ $plat->libelle }}</h5>
 
-<div class="card" style="max-width: 600px;">
+<div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
         <form method="POST" action="{{ route('plats.update', $plat) }}">
             @csrf
@@ -45,7 +45,7 @@
                     <option value="inactif" @selected($plat->statut === 'inactif')>Inactif</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
             <a href="{{ route('plats.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

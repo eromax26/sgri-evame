@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CollaborateurController;
 use App\Http\Controllers\RoleController;
@@ -22,6 +24,11 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('mot-de-passe-oublie', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('mot-de-passe-oublie', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('reinitialiser-mot-de-passe/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('reinitialiser-mot-de-passe', [ResetPasswordController::class, 'reset'])->name('password.update');
+
 Route::middleware('auth')->group(function () {
     Route::get('profil', [ProfilController::class, 'index'])->name('profil.index');
     Route::post('profil/mot-de-passe', [ProfilController::class, 'changerMotDePasse'])->name('profil.motDePasse');
@@ -36,7 +43,6 @@ Route::middleware(['auth', 'role:Agent de securite'])->group(function () {
     Route::get('agent-securite/demandes', [AgentSecuriteController::class, 'demandesEnAttente'])->name('agent.demandes');
     Route::post('agent-securite/imprimer', [AgentSecuriteController::class, 'imprimer'])->name('agent.imprimer');
     Route::get('agent-securite/verifier', [AgentSecuriteController::class, 'verifierForm'])->name('agent.verifierForm');
-    Route::post('agent-securite/verifier', [AgentSecuriteController::class, 'verifier'])->name('agent.verifier');
     Route::post('agent-securite/confirmer', [AgentSecuriteController::class, 'confirmerRetrait'])->name('agent.confirmerRetrait');
     Route::get('agent-securite/journal', [AgentSecuriteController::class, 'journalPassages'])->name('agent.journal');
 });
@@ -60,6 +66,7 @@ Route::middleware(['auth', 'role:Administrateur DSII'])->group(function () {
 Route::middleware(['auth', 'role:Ressources Humaines'])->group(function () {
     Route::get('etat-rh', [EtatRhController::class, 'index'])->name('etat-rh.index');
     Route::post('etat-rh/verrouiller', [EtatRhController::class, 'verrouiller'])->name('etat-rh.verrouiller');
+    Route::get('etat-rh/export', [EtatRhController::class, 'export'])->name('etat-rh.export');
     Route::get('etat-rh/historique', [EtatRhController::class, 'historique'])->name('etat-rh.historique');
 });
 
@@ -71,6 +78,7 @@ Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {
     Route::post('menus', [MenuController::class, 'store'])->name('menus.store');
     Route::get('menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
     Route::post('menus/{menu}/publier', [MenuController::class, 'publier'])->name('menus.publier');
+    Route::delete('menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
     Route::put('ligne-menus/{ligneMenu}', [MenuController::class, 'updateLigne'])->name('ligne-menus.update');
 
     Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');

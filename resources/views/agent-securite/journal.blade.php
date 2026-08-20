@@ -2,16 +2,20 @@
 
 @section('titre', 'Journal des passages')
 
+@section('fil')
+    Tickets / <strong>Journal des passages</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Journal des passages</h5>
+<h5 class="sg-page-title mb-4">Journal des passages</h5>
 
 <form method="GET" action="{{ route('agent.journal') }}" class="d-flex gap-2 mb-3">
     <input type="date" name="date" class="form-control" style="max-width: 200px;" value="{{ $date }}">
-    <button type="submit" class="btn btn-primary">Afficher</button>
+    <button type="submit" class="btn sg-btn-navy">Afficher</button>
 </form>
 
-<div class="card mb-3" style="max-width: 300px;">
+<div class="card shadow-sm border-0 mb-3" style="max-width: 300px;">
     <div class="card-body">
         <div class="d-flex justify-content-between">
             <span class="text-muted">Passages ce jour</span>
@@ -20,7 +24,7 @@
     </div>
 </div>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Heure</th>

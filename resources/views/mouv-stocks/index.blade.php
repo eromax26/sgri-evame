@@ -2,13 +2,17 @@
 
 @section('titre', 'Mouvements de stock')
 
+@section('fil')
+    Gestion du stock / <strong>Mouvements de stock</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Mouvements de stock</h5>
+<h5 class="sg-page-title mb-4">Mouvements de stock</h5>
 
-<a href="{{ route('mouv-stocks.create') }}" class="btn btn-success btn-sm mb-3">+ Nouveau mouvement</a>
+<a href="{{ route('mouv-stocks.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau mouvement</a>
 
-<table class="table table-striped bg-white">
+<table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
             <th>Date</th>
@@ -26,9 +30,9 @@
                 <td>{{ $mouv->article->libelle }}</td>
                 <td>
                     @if ($mouv->type_mouvement === 'entree')
-                        <span class="badge bg-success">Entree</span>
+                        <span class="sg-pill sg-pill--ok">Entree</span>
                     @else
-                        <span class="badge bg-warning text-dark">Sortie</span>
+                        <span class="sg-pill sg-pill--danger">Sortie</span>
                     @endif
                 </td>
                 <td>{{ $mouv->quantite }} {{ $mouv->article->unite_mesure }}</td>

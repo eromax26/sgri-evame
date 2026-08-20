@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="mb-3">Nouvelle société</h5>
+<h5 class="sg-page-title mb-4">Nouvelle société</h5>
 
-<div class="card" style="max-width: 500px;">
+<div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
         <form method="POST" action="{{ route('societes.store') }}">
             @csrf
@@ -23,7 +23,7 @@
                 <label class="form-label">Sigle</label>
                 <input type="text" name="sigle" class="form-control" value="{{ old('sigle') }}">
             </div>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
             <a href="{{ route('societes.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

@@ -2,11 +2,15 @@
 
 @section('titre', 'Nouveau mouvement')
 
+@section('fil')
+    Gestion du stock / Mouvements de stock / <strong>Nouveau mouvement</strong>
+@endsection
+
 @section('contenu')
 
-<h5 class="mb-3">Nouveau mouvement de stock</h5>
+<h5 class="sg-page-title mb-4">Nouveau mouvement de stock</h5>
 
-<div class="card" style="max-width: 500px;">
+<div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
         <form method="POST" action="{{ route('mouv-stocks.store') }}">
             @csrf
@@ -54,7 +58,7 @@
                 <input type="text" name="motif_sortie" class="form-control" value="{{ old('motif_sortie') }}" placeholder="Ex: preparation repas du jour">
             </div>
 
-            <button type="submit" class="btn btn-primary">Enregistrer le mouvement</button>
+            <button type="submit" class="btn sg-btn-primary">Enregistrer le mouvement</button>
             <a href="{{ route('mouv-stocks.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>
