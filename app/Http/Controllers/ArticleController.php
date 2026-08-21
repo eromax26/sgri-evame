@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::orderBy('libelle')->get();
+        $query = Article::query();
+
+        if ($request->filled('recherche')) {
+            $query->where('libelle', 'like', '%' . $request->recherche . '%');
+        }
+
+        $articles = $query->orderBy('libelle')->paginate(15)->withQueryString();
 
         return view('articles.index', compact('articles'));
     }

@@ -12,6 +12,15 @@
 
 <a href="{{ route('articles.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouvel article</a>
 
+<form method="GET" action="{{ route('articles.index') }}" class="row g-2 mb-3">
+    <div class="col-auto">
+        <input type="text" name="recherche" class="form-control" placeholder="Rechercher un article" value="{{ request('recherche') }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn sg-btn-navy">Rechercher</button>
+    </div>
+</form>
+
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -46,5 +55,7 @@
         @endforelse
     </tbody>
 </table>
+
+{{ $articles->links() }}
 
 @endsection

@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Modifier {{ $collaborateur->prenom }} {{ $collaborateur->nom }}</h5>
+<h5 class="sg-page-title mb-4">Modifier {{ $collaborateur->nom }} {{ $collaborateur->prenom }}</h5>
 
 <div class="card sg-card-form-lg shadow-sm border-0">
     <div class="card-body">

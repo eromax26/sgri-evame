@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::post('selection', [SelectionController::class, 'valider'])->name('selection.valider');
     Route::get('mes-repas', [SelectionController::class, 'historique'])->name('selection.historique');
     Route::get('mes-tickets', [SelectionController::class, 'mesTickets'])->name('selection.tickets');
+    Route::get('mes-tickets/{ligneMenu}/imprimer', [SelectionController::class, 'imprimerTicket'])->name('selection.imprimerTicket');
 });
 
 Route::middleware(['auth', 'role:Agent de securite'])->group(function () {
@@ -79,7 +80,7 @@ Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {
     Route::get('menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
     Route::post('menus/{menu}/publier', [MenuController::class, 'publier'])->name('menus.publier');
     Route::delete('menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
-    Route::put('ligne-menus/{ligneMenu}', [MenuController::class, 'updateLigne'])->name('ligne-menus.update');
+    Route::put('menus/{menu}/lignes', [MenuController::class, 'updateLignes'])->name('menus.updateLignes');
 
     Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('articles/create', [ArticleController::class, 'create'])->name('articles.create');

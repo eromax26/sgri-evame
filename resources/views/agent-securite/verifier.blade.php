@@ -46,7 +46,7 @@
     <tbody>
         @forelse ($tickets as $ticket)
             <tr class="{{ $ticket->statut === 'consomme' ? 'table-secondary text-muted' : '' }}">
-                <td>{{ $ticket->collaborateur->prenom }} {{ $ticket->collaborateur->nom }}</td>
+                <td>{{ $ticket->collaborateur->nom }} {{ $ticket->collaborateur->prenom }}</td>
                 <td>{{ $ticket->collaborateur->matricule }}</td>
                 <td>{{ $ticket->plat->libelle }}</td>
                 <td class="text-muted small">{{ $ticket->numero_ticket }}</td>

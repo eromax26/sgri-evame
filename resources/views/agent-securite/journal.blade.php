@@ -39,11 +39,11 @@
         @forelse ($passages as $passage)
             <tr>
                 <td>{{ $passage->date_retrait->format('H:i') }}</td>
-                <td>{{ $passage->collaborateur->prenom }} {{ $passage->collaborateur->nom }}</td>
+                <td>{{ $passage->collaborateur->nom }} {{ $passage->collaborateur->prenom }}</td>
                 <td>{{ $passage->collaborateur->matricule }}</td>
                 <td>{{ $passage->plat->libelle }}</td>
                 <td class="small text-muted">{{ $passage->numero_ticket }}</td>
-                <td>{{ $passage->agentSecurite->prenom ?? '—' }} {{ $passage->agentSecurite->nom ?? '' }}</td>
+                <td>{{ $passage->agentSecurite->nom ?? '—' }} {{ $passage->agentSecurite->prenom ?? '' }}</td>
             </tr>
         @empty
             <tr><td colspan="6" class="text-center text-muted">Aucun passage enregistre pour cette date.</td></tr>

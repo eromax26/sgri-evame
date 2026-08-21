@@ -15,7 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => App\Http\Middleware\CheckRole::class,
         ]);
-        //
+
+        // Fait confiance aux en-tetes X-Forwarded-* (necessaire derriere un tunnel/proxy
+        // comme Cloudflare Tunnel, sinon Laravel genere des URLs en http:// sur une page https).
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

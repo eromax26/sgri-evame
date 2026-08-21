@@ -3,50 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>Impression des tickets</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 10mm;
+            background-color: #ffffff;
         }
         .grille {
             display: flex;
             flex-wrap: wrap;
         }
-        .ticket {
-            width: 60mm;
-            height: 45mm;
-            border: 1px dashed #aab7c4;
-            padding: 4mm;
+        .ticket-repas {
+            width: 85mm;
+            background-color: #ffffff;
+            border-radius: 4mm;
+            box-shadow: 0 0.5mm 2mm rgba(15, 23, 42, 0.08);
+            padding: 3mm;
             margin: 0 3mm 3mm 0;
             box-sizing: border-box;
             page-break-inside: avoid;
         }
-        .ticket .entete {
-            text-align: center;
-            border-bottom: 1px solid #1a3a5c;
-            padding-bottom: 3px;
-            margin-bottom: 5px;
+        .ticket-repas .cadre {
+            border: 0.3mm dashed #cbd5e1;
+            border-radius: 3mm;
+            padding: 3mm;
         }
-        .ticket .entete .societe {
+        .ticket-repas .corps {
+            display: flex;
+            gap: 3mm;
+        }
+        .ticket-repas .qr {
+            flex-shrink: 0;
+            line-height: 0;
+        }
+        .ticket-repas .infos {
+            flex: 1;
+            min-width: 0;
+        }
+        .ticket-repas .entete-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2mm;
+        }
+        .ticket-repas .logo-mini {
+            height: 5mm;
+        }
+        .ticket-repas .label-repas {
+            font-size: 7.5px;
+            letter-spacing: 0.06em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .ticket-repas .nom {
+            font-weight: 700;
             font-size: 11px;
-            font-weight: bold;
-            color: #1a3a5c;
+            color: #0f172a;
         }
-        .ticket .entete .appli {
-            font-size: 8px;
-            color: #6b8098;
+        .ticket-repas .matricule {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 9px;
         }
-        .ticket .ligne {
-            font-size: 9.5px;
-            margin-bottom: 2px;
+        .ticket-repas .ligne {
+            font-size: 9px;
+            color: #4a6f95;
+            margin-top: 1mm;
         }
-        .ticket .numero {
-            font-size: 10px;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 5px;
-            color: #e31e24;
+        .ticket-repas .numero {
+            font-family: 'Courier New', monospace;
+            font-size: 8.5px;
+            color: #b45309;
+            margin-top: 2mm;
         }
         .barre-outils {
             padding: 10px;
@@ -56,6 +87,7 @@
         }
         @media print {
             .barre-outils { display: none; }
+            .ticket-repas { box-shadow: none; }
         }
     </style>
 </head>
@@ -68,21 +100,38 @@
 
 <div class="grille">
     @foreach ($tickets as $ticket)
-        <div class="ticket">
-            <div class="entete">
-                <div class="societe">GROUPE EVAME</div>
-                <div class="appli">Restauration interne</div>
+        <div class="ticket-repas">
+            <div class="cadre">
+                <div class="corps">
+                    <div class="qr" id="qr-{{ $ticket->id }}"></div>
+                    <div class="infos">
+                        <div class="entete-mini">
+                            <img src="{{ asset('images/logo-evame-sidebar.png') }}" alt="EVAME" class="logo-mini">
+                            <span class="label-repas">Ticket repas</span>
+                        </div>
+                        <div class="nom">
+                            {{ $ticket->collaborateur->nom }} {{ $ticket->collaborateur->prenom }}
+                            <span class="matricule">({{ $ticket->collaborateur->matricule }})</span>
+                        </div>
+                        <div class="ligne">{{ ucfirst($ticket->date_repas->translatedFormat('l d/m/Y')) }}</div>
+                        <div class="ligne">{{ $ticket->plat->libelle }}</div>
+                    </div>
+                </div>
+                <div class="numero">{{ $ticket->numero_ticket }}</div>
             </div>
-
-            <div class="ligne"><strong>{{ $ticket->collaborateur->prenom }} {{ $ticket->collaborateur->nom }}</strong></div>
-            <div class="ligne">Matricule : {{ $ticket->collaborateur->matricule }}</div>
-            <div class="ligne">Date : {{ $ticket->date_repas->format('d/m/Y') }}</div>
-            <div class="ligne">Plat : {{ $ticket->plat->libelle }}</div>
-
-            <div class="numero">{{ $ticket->numero_ticket }}</div>
         </div>
     @endforeach
 </div>
+
+<script>
+    @foreach ($tickets as $ticket)
+        new QRCode(document.getElementById('qr-{{ $ticket->id }}'), {
+            text: @json($ticket->numero_ticket),
+            width: 65,
+            height: 65,
+        });
+    @endforeach
+</script>
 
 </body>
 </html>

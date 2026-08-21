@@ -43,7 +43,7 @@
                         {{ $mouv->motif_sortie ?? '—' }}
                     @endif
                 </td>
-                <td>{{ $mouv->collaborateur->prenom }} {{ $mouv->collaborateur->nom }}</td>
+                <td>{{ $mouv->collaborateur->nom }} {{ $mouv->collaborateur->prenom }}</td>
             </tr>
         @empty
             <tr><td colspan="6" class="text-center text-muted">Aucun mouvement enregistre.</td></tr>

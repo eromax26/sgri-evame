@@ -37,7 +37,7 @@ class AgentSecuriteController extends Controller
 
             if ($ligne) {
                 $ligne->update([
-                    'numero_ticket' => 'TCK-' . now()->format('Ymd') . '-' . Str::upper(Str::random(6)),
+                    'numero_ticket' => 'TCK-' . Str::upper(Str::random(8)),
                     'date_impression' => now(),
                     'agent_securite_id' => $agent->id,
                     'statut' => 'imprime',

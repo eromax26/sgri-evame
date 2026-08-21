@@ -72,15 +72,20 @@ class MenuController extends Controller
         return view('menus.edit', compact('menu', 'lignesMenu', 'plats'));
     }
 
-    public function updateLigne(Request $request, LigneMenu $ligneMenu)
+    public function updateLignes(Request $request, Menu $menu)
     {
         $validated = $request->validate([
-            'plat_id' => ['required', 'exists:plats,id'],
+            'plats' => ['required', 'array'],
+            'plats.*' => ['nullable', 'exists:plats,id'],
         ]);
 
-        $ligneMenu->update($validated);
+        DB::transaction(function () use ($menu, $validated) {
+            foreach ($validated['plats'] as $ligneId => $platId) {
+                $menu->lignesMenu()->whereKey($ligneId)->update(['plat_id' => $platId]);
+            }
+        });
 
-        return back()->with('success', 'Plat mis a jour pour ce jour.');
+        return redirect()->route('menus.edit', $menu)->with('success', 'Menu enregistre.');
     }
 
     public function publier(Menu $menu)
@@ -102,7 +107,10 @@ class MenuController extends Controller
             return back()->with('error', 'Un menu publie ne peut pas etre supprime.');
         }
 
-        $menu->delete();
+        DB::transaction(function () use ($menu) {
+            $menu->lignesMenu()->delete();
+            $menu->delete();
+        });
 
         return redirect()->route('menus.index')->with('success', 'Menu brouillon supprime.');
     }

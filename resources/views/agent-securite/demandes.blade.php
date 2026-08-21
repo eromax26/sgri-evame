@@ -28,7 +28,7 @@
                     <td class="text-center">
                         <input type="checkbox" name="lignes[]" value="{{ $ligne->id }}" class="form-check-input">
                     </td>
-                    <td>{{ $ligne->collaborateur->prenom }} {{ $ligne->collaborateur->nom }} ({{ $ligne->collaborateur->matricule }})</td>
+                    <td>{{ $ligne->collaborateur->nom }} {{ $ligne->collaborateur->prenom }} ({{ $ligne->collaborateur->matricule }})</td>
                     <td>{{ ucfirst($ligne->date_repas->translatedFormat('l d/m/Y')) }}</td>
                     <td>{{ $ligne->plat->libelle }}</td>
                 </tr>

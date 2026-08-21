@@ -6,6 +6,7 @@ use App\Models\LigneMenu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SelectionController extends Controller
 {
@@ -98,5 +99,23 @@ class SelectionController extends Controller
             ->get();
 
         return view('selection.tickets', compact('tickets'));
+    }
+
+    public function imprimerTicket(LigneMenu $ligneMenu)
+    {
+        abort_unless($ligneMenu->collaborateur_id === Auth::id(), 403);
+        abort_unless(in_array($ligneMenu->statut, ['demande', 'imprime']), 403);
+
+        if ($ligneMenu->statut === 'demande') {
+            $ligneMenu->update([
+                'numero_ticket' => 'TCK-' . Str::upper(Str::random(8)),
+                'date_impression' => now(),
+                'statut' => 'imprime',
+            ]);
+        }
+
+        $ligneMenu->load('plat', 'collaborateur');
+
+        return view('selection.ticket-impression', ['ticket' => $ligneMenu]);
     }
 }

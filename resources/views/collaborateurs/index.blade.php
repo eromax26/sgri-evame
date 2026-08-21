@@ -52,7 +52,7 @@
         @forelse ($collaborateurs as $c)
             <tr>
                 <td>{{ $c->matricule }}</td>
-                <td>{{ $c->prenom }} {{ $c->nom }}</td>
+                <td>{{ $c->nom }} {{ $c->prenom }}</td>
                 <td>{{ $c->departement->nom ?? '—' }}</td>
                 <td>{{ $c->fonction ?? '—' }}</td>
                 <td>

@@ -17,6 +17,7 @@
             <th>Plat</th>
             <th>Numero du ticket</th>
             <th>Etat</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -38,9 +39,14 @@
                         <span class="sg-pill sg-pill--ok">Ticket pret a retirer</span>
                     @endif
                 </td>
+                <td>
+                    <a href="{{ route('selection.imprimerTicket', $ticket) }}" target="_blank" class="btn btn-sm sg-btn-outline">
+                        <i class="bi bi-printer"></i> Imprimer
+                    </a>
+                </td>
             </tr>
         @empty
-            <tr><td colspan="4" class="text-center text-muted">Aucun ticket en cours.</td></tr>
+            <tr><td colspan="5" class="text-center text-muted">Aucun ticket en cours.</td></tr>
         @endforelse
     </tbody>
 </table>
