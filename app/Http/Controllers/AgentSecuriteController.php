@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LigneMenu;
+use App\Models\SelectionRepas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -11,10 +11,11 @@ class AgentSecuriteController extends Controller
 {
     public function demandesEnAttente()
     {
-        $demandes = LigneMenu::with('plat', 'collaborateur')
+        $demandes = SelectionRepas::with('ligneMenu.plat', 'collaborateur')
             ->where('statut', 'demande')
-            ->orderBy('date_repas')
-            ->get();
+            ->get()
+            ->sortBy(fn ($selection) => $selection->ligneMenu->date_repas)
+            ->values();
 
         return view('agent-securite.demandes', compact('demandes'));
     }
@@ -23,26 +24,26 @@ class AgentSecuriteController extends Controller
     {
         $validated = $request->validate([
             'lignes' => ['required', 'array', 'min:1'],
-            'lignes.*' => ['exists:ligne_menus,id'],
+            'lignes.*' => ['exists:selections_repas,id'],
             'format' => ['required', 'in:thermique,a4'],
         ]);
 
         $agent = Auth::user();
         $idsImprimes = [];
 
-        foreach ($validated['lignes'] as $ligneId) {
-            $ligne = LigneMenu::where('id', $ligneId)
+        foreach ($validated['lignes'] as $selectionId) {
+            $selection = SelectionRepas::where('id', $selectionId)
                 ->where('statut', 'demande')
                 ->first();
 
-            if ($ligne) {
-                $ligne->update([
+            if ($selection) {
+                $selection->update([
                     'numero_ticket' => 'TCK-' . Str::upper(Str::random(8)),
                     'date_impression' => now(),
                     'agent_securite_id' => $agent->id,
                     'statut' => 'imprime',
                 ]);
-                $idsImprimes[] = $ligne->id;
+                $idsImprimes[] = $selection->id;
             }
         }
 
@@ -50,10 +51,11 @@ class AgentSecuriteController extends Controller
             return back()->with('error', 'Aucun ticket a imprimer.');
         }
 
-        $tickets = LigneMenu::with('plat', 'collaborateur')
+        $tickets = SelectionRepas::with('ligneMenu.plat', 'collaborateur')
             ->whereIn('id', $idsImprimes)
-            ->orderBy('date_repas')
-            ->get();
+            ->get()
+            ->sortBy(fn ($selection) => $selection->ligneMenu->date_repas)
+            ->values();
 
         if ($validated['format'] === 'thermique') {
             return view('agent-securite.tickets-thermique', compact('tickets'));
@@ -66,14 +68,14 @@ class AgentSecuriteController extends Controller
         $date = $request->input('date', now()->toDateString());
         $recherche = $request->input('recherche');
 
-        $base = LigneMenu::whereIn('statut', ['imprime', 'consomme'])
-            ->whereDate('date_repas', $date);
+        $base = SelectionRepas::whereIn('statut', ['imprime', 'consomme'])
+            ->whereHas('ligneMenu', fn ($q) => $q->whereDate('date_repas', $date));
 
         $attendus = (clone $base)->where('statut', 'imprime')->count();
         $passes = (clone $base)->where('statut', 'consomme')->count();
 
         $tickets = (clone $base)
-            ->with('plat', 'collaborateur')
+            ->with('ligneMenu.plat', 'collaborateur')
             ->when($recherche, function ($query) use ($recherche) {
                 $query->where(function ($q) use ($recherche) {
                     $q->where('numero_ticket', 'like', "%{$recherche}%")
@@ -93,26 +95,26 @@ class AgentSecuriteController extends Controller
     public function confirmerRetrait(Request $request)
     {
         $validated = $request->validate([
-            'ligne_menu_id' => ['required', 'exists:ligne_menus,id'],
+            'selection_id' => ['required', 'exists:selections_repas,id'],
         ]);
 
-        $ligne = LigneMenu::with('plat', 'collaborateur')->findOrFail($validated['ligne_menu_id']);
+        $selection = SelectionRepas::with('ligneMenu.plat', 'collaborateur')->findOrFail($validated['selection_id']);
 
-        if ($ligne->statut === 'consomme') {
+        if ($selection->statut === 'consomme') {
             return redirect()->route('agent.verifierForm')->with('error', 'Ce ticket a deja ete utilise.');
         }
 
-        if ($ligne->date_repas->toDateString() !== now()->toDateString()) {
+        if ($selection->ligneMenu->date_repas->toDateString() !== now()->toDateString()) {
             return redirect()->route('agent.verifierForm')->with('error', "Ce ticket n'est pas valable aujourd'hui.");
         }
 
-        if (! $ligne->collaborateur->estActif()) {
+        if (! $selection->collaborateur->estActif()) {
             return redirect()->route('agent.verifierForm')->with('error', 'Le collaborateur est inactif (RG03).');
         }
 
-        $ligne->update([
+        $selection->update([
             'date_retrait' => now(),
-            'prix' => $ligne->plat->prix,
+            'prix' => $selection->ligneMenu->plat->prix,
             'statut' => 'consomme',
         ]);
 
@@ -123,7 +125,7 @@ class AgentSecuriteController extends Controller
     {
         $date = $request->input('date', now()->toDateString());
 
-        $passages = LigneMenu::with('plat', 'collaborateur', 'agentSecurite')
+        $passages = SelectionRepas::with('ligneMenu.plat', 'collaborateur', 'agentSecurite')
             ->where('statut', 'consomme')
             ->whereDate('date_retrait', $date)
             ->orderBy('date_retrait', 'desc')

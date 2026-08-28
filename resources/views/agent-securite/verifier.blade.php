@@ -61,7 +61,7 @@
                     @if ($ticket->statut === 'imprime')
                         <form method="POST" action="{{ route('agent.confirmerRetrait') }}">
                             @csrf
-                            <input type="hidden" name="ligne_menu_id" value="{{ $ticket->id }}">
+                            <input type="hidden" name="selection_id" value="{{ $ticket->id }}">
                             <button type="submit" class="btn btn-sm sg-btn-primary">Valider l'entrée</button>
                         </form>
                     @else

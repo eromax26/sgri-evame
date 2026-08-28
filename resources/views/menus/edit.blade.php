@@ -21,7 +21,7 @@
             <tr>
                 <th style="width: 180px;">Jour</th>
                 <th>Plat prevu</th>
-                <th style="width: 120px;">Statut</th>
+                <th style="width: 120px;">Etat</th>
             </tr>
         </thead>
         <tbody>
@@ -42,7 +42,11 @@
                         </select>
                     </td>
                     <td>
-                        <span class="sg-pill sg-pill--off">{{ $ligne->statut }}</span>
+                        @if ($ligne->plat_id)
+                            <span class="sg-pill sg-pill--ok">Defini</span>
+                        @else
+                            <span class="sg-pill sg-pill--warn">A definir</span>
+                        @endif
                     </td>
                 </tr>
             @endforeach

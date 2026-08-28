@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LigneMenu;
 use App\Models\Menu;
 use App\Models\Plat;
+use App\Models\SelectionRepas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -54,7 +55,6 @@ class MenuController extends Controller
                     'menu_id' => $menu->id,
                     'plat_id' => $platParDefaut?->id,
                     'date_repas' => $debut->copy()->addDays($i),
-                    'statut' => 'prevu',
                 ]);
             }
 
@@ -120,22 +120,20 @@ class MenuController extends Controller
         $debut = now()->toDateString();
         $fin = now()->addDays(6)->toDateString();
 
-        $previsions = LigneMenu::with('plat')
+        $previsions = SelectionRepas::with('ligneMenu.plat')
             ->whereIn('statut', ['demande', 'imprime'])
-            ->whereBetween('date_repas', [$debut, $fin])
+            ->whereHas('ligneMenu', fn ($q) => $q->whereBetween('date_repas', [$debut, $fin]))
             ->get()
-            ->groupBy(function ($ligne) {
-                return $ligne->date_repas->toDateString() . '|' . $ligne->plat_id;
-            })
-            ->map(function ($lignes) {
-                $premiere = $lignes->first();
+            ->groupBy(fn ($selection) => $selection->ligneMenu->date_repas->toDateString() . '|' . $selection->ligneMenu->plat_id)
+            ->map(function ($selections) {
+                $premiere = $selections->first();
 
                 return [
-                    'date_repas' => $premiere->date_repas,
-                    'plat' => $premiere->plat,
-                    'total' => $lignes->count(),
-                    'imprimes' => $lignes->where('statut', 'imprime')->count(),
-                    'en_attente' => $lignes->where('statut', 'demande')->count(),
+                    'date_repas' => $premiere->ligneMenu->date_repas,
+                    'plat' => $premiere->ligneMenu->plat,
+                    'total' => $selections->count(),
+                    'imprimes' => $selections->where('statut', 'imprime')->count(),
+                    'en_attente' => $selections->where('statut', 'demande')->count(),
                 ];
             })
             ->sortBy('date_repas');

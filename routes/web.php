@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::post('selection', [SelectionController::class, 'valider'])->name('selection.valider');
     Route::get('mes-repas', [SelectionController::class, 'historique'])->name('selection.historique');
     Route::get('mes-tickets', [SelectionController::class, 'mesTickets'])->name('selection.tickets');
-    Route::get('mes-tickets/{ligneMenu}/imprimer', [SelectionController::class, 'imprimerTicket'])->name('selection.imprimerTicket');
+    Route::get('mes-tickets/{selection}/imprimer', [SelectionController::class, 'imprimerTicket'])->name('selection.imprimerTicket');
 });
 
 Route::middleware(['auth', 'role:Agent de securite'])->group(function () {

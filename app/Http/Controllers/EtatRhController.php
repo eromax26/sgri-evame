@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Collaborateur;
-use App\Models\LigneMenu;
+use App\Models\SelectionRepas;
 use App\Support\XlsxExporter;
 use Illuminate\Http\Request;
 
@@ -13,8 +13,8 @@ class EtatRhController extends Controller
     {
         $periode = $request->input('periode', now()->format('Y-m'));
 
-        $lignes = LigneMenu::where('statut', 'consomme')
-            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
+        $lignes = SelectionRepas::where('statut', 'consomme')
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
             ->get()
             ->groupBy('collaborateur_id');
 
@@ -34,12 +34,12 @@ class EtatRhController extends Controller
             ];
         }
 
-        $totalConsomme = LigneMenu::where('statut', 'consomme')
-            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
+        $totalConsomme = SelectionRepas::where('statut', 'consomme')
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
             ->count();
 
-        $totalVerrouille = LigneMenu::where('statut', 'consomme')
-            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
+        $totalVerrouille = SelectionRepas::where('statut', 'consomme')
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
             ->where('statut_facturation', 'verrouille')
             ->count();
 
@@ -63,8 +63,8 @@ class EtatRhController extends Controller
 
         // Verrouille les repas consommes pas encore couverts : permet de rattraper les
         // retraits tardifs sur une periode deja verrouillee une premiere fois (RG-facturation).
-        $nbVerrouilles = LigneMenu::where('statut', 'consomme')
-            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$validated['periode']])
+        $nbVerrouilles = SelectionRepas::where('statut', 'consomme')
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$validated['periode']]))
             ->where('statut_facturation', '!=', 'verrouille')
             ->update([
                 'periode_facturation' => $validated['periode'],
@@ -83,8 +83,8 @@ class EtatRhController extends Controller
     {
         $periode = $request->input('periode', now()->format('Y-m'));
 
-        $lignes = LigneMenu::where('statut', 'consomme')
-            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
+        $lignes = SelectionRepas::where('statut', 'consomme')
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
             ->get()
             ->groupBy('collaborateur_id');
 
@@ -115,7 +115,7 @@ class EtatRhController extends Controller
 
     public function historique()
     {
-        $periodes = LigneMenu::where('statut', 'consomme')
+        $periodes = SelectionRepas::where('statut', 'consomme')
             ->where('statut_facturation', 'verrouille')
             ->get()
             ->groupBy('periode_facturation')

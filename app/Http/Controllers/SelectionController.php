@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\LigneMenu;
+use App\Models\Menu;
+use App\Models\SelectionRepas;
+use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -10,17 +14,51 @@ use Illuminate\Support\Str;
 
 class SelectionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $lignesDisponibles = LigneMenu::with('plat', 'menu')
-            ->whereHas('menu', fn ($q) => $q->where('statut_publication', 'publie'))
-            ->where('statut', 'prevu')
-            ->whereNull('collaborateur_id')
-            ->where('date_repas', '>=', now()->toDateString())
-            ->orderBy('date_repas')
-            ->get();
+        $collaborateur = Auth::user();
 
-        return view('selection.index', compact('lignesDisponibles'));
+        $debutSemaine = $request->filled('semaine')
+            ? Carbon::parse($request->input('semaine'))->startOfWeek(Carbon::MONDAY)
+            : now()->startOfWeek(Carbon::MONDAY);
+
+        $menu = Menu::where('statut_publication', 'publie')
+            ->whereDate('date_debut_semaine', $debutSemaine->toDateString())
+            ->first();
+
+        $lignesSemaine = $menu
+            ? LigneMenu::with('plat')
+                ->where('menu_id', $menu->id)
+                ->get()
+                ->keyBy(fn ($ligne) => $ligne->date_repas->toDateString())
+            : collect();
+
+        $mesSelections = $lignesSemaine->isNotEmpty()
+            ? SelectionRepas::where('collaborateur_id', $collaborateur->id)
+                ->whereIn('ligne_menu_id', $lignesSemaine->pluck('id'))
+                ->get()
+                ->keyBy('ligne_menu_id')
+            : collect();
+
+        $jours = collect(range(0, 4))->map(function ($i) use ($debutSemaine, $lignesSemaine, $mesSelections) {
+            $date = $debutSemaine->copy()->addDays($i);
+            $ligne = $lignesSemaine->get($date->toDateString());
+
+            return [
+                'date' => $date,
+                'ligne' => $ligne,
+                'maSelection' => $ligne ? $mesSelections->get($ligne->id) : null,
+            ];
+        });
+
+        return view('selection.index', [
+            'menu' => $menu,
+            'jours' => $jours,
+            'debutSemaine' => $debutSemaine,
+            'finSemaine' => $debutSemaine->copy()->addDays(4),
+            'semainePrecedente' => $debutSemaine->copy()->subWeek()->toDateString(),
+            'semaineSuivante' => $debutSemaine->copy()->addWeek()->toDateString(),
+        ]);
     }
 
     public function valider(Request $request)
@@ -39,25 +77,36 @@ class SelectionController extends Controller
         $nbValidees = 0;
 
         foreach ($validated['lignes'] as $ligneId) {
-            // Verrou pessimiste : empeche deux collaborateurs de valider la meme ligne en meme temps
             $nbValidees += DB::transaction(function () use ($ligneId, $collaborateur) {
                 $ligne = LigneMenu::where('id', $ligneId)
-                    ->where('statut', 'prevu')
-                    ->whereNull('collaborateur_id')
+                    ->whereNotNull('plat_id')
                     ->where('date_repas', '>=', now()->toDateString())
                     ->whereHas('menu', fn ($q) => $q->where('statut_publication', 'publie'))
-                    ->lockForUpdate()
                     ->first();
 
                 if (! $ligne) {
                     return 0;
                 }
 
-                $ligne->update([
-                    'collaborateur_id' => $collaborateur->id,
-                    'date_selection' => now(),
-                    'statut' => 'demande',
-                ]);
+                $dejaSelectionne = SelectionRepas::where('ligne_menu_id', $ligne->id)
+                    ->where('collaborateur_id', $collaborateur->id)
+                    ->exists();
+
+                if ($dejaSelectionne) {
+                    return 0;
+                }
+
+                try {
+                    SelectionRepas::create([
+                        'ligne_menu_id' => $ligne->id,
+                        'collaborateur_id' => $collaborateur->id,
+                        'date_selection' => now(),
+                        'statut' => 'demande',
+                    ]);
+                } catch (QueryException $e) {
+                    // Contrainte unique (ligne_menu_id, collaborateur_id) : deja selectionne entre-temps.
+                    return 0;
+                }
 
                 return 1;
             });
@@ -76,12 +125,13 @@ class SelectionController extends Controller
         $collaborateur = Auth::user();
         $periode = $request->input('periode', now()->format('Y-m'));
 
-        $repas = LigneMenu::with('plat')
+        $repas = SelectionRepas::with('ligneMenu.plat')
             ->where('collaborateur_id', $collaborateur->id)
             ->where('statut', 'consomme')
-            ->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode])
-            ->orderBy('date_repas', 'desc')
-            ->get();
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
+            ->get()
+            ->sortByDesc(fn ($selection) => $selection->ligneMenu->date_repas)
+            ->values();
 
         $totalMontant = $repas->sum('prix');
 
@@ -92,30 +142,31 @@ class SelectionController extends Controller
     {
         $collaborateur = Auth::user();
 
-        $tickets = LigneMenu::with('plat')
+        $tickets = SelectionRepas::with('ligneMenu.plat')
             ->where('collaborateur_id', $collaborateur->id)
             ->whereIn('statut', ['demande', 'imprime'])
-            ->orderBy('date_repas')
-            ->get();
+            ->get()
+            ->sortBy(fn ($selection) => $selection->ligneMenu->date_repas)
+            ->values();
 
         return view('selection.tickets', compact('tickets'));
     }
 
-    public function imprimerTicket(LigneMenu $ligneMenu)
+    public function imprimerTicket(SelectionRepas $selection)
     {
-        abort_unless($ligneMenu->collaborateur_id === Auth::id(), 403);
-        abort_unless(in_array($ligneMenu->statut, ['demande', 'imprime']), 403);
+        abort_unless($selection->collaborateur_id === Auth::id(), 403);
+        abort_unless(in_array($selection->statut, ['demande', 'imprime']), 403);
 
-        if ($ligneMenu->statut === 'demande') {
-            $ligneMenu->update([
+        if ($selection->statut === 'demande') {
+            $selection->update([
                 'numero_ticket' => 'TCK-' . Str::upper(Str::random(8)),
                 'date_impression' => now(),
                 'statut' => 'imprime',
             ]);
         }
 
-        $ligneMenu->load('plat', 'collaborateur');
+        $selection->load('ligneMenu.plat', 'collaborateur');
 
-        return view('selection.ticket-impression', ['ticket' => $ligneMenu]);
+        return view('selection.ticket-impression', ['ticket' => $selection]);
     }
 }
