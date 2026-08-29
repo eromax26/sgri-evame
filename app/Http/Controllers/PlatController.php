@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Plat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PlatController extends Controller
 {
@@ -37,7 +38,12 @@ class PlatController extends Controller
             'description' => ['nullable', 'string'],
             'categorie' => ['nullable', 'string', 'max:255'],
             'prix' => ['required', 'numeric', 'min:0'],
+            'photo' => ['nullable', 'image', 'max:2048'],
         ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')->store('plats', 'public');
+        }
 
         Plat::create($validated);
 
@@ -58,7 +64,15 @@ class PlatController extends Controller
             'categorie' => ['nullable', 'string', 'max:255'],
             'prix' => ['required', 'numeric', 'min:0'],
             'statut' => ['required', 'in:actif,inactif'],
+            'photo' => ['nullable', 'image', 'max:2048'],
         ]);
+
+        if ($request->hasFile('photo')) {
+            if ($plat->photo) {
+                Storage::disk('public')->delete($plat->photo);
+            }
+            $validated['photo'] = $request->file('photo')->store('plats', 'public');
+        }
 
         $plat->update($validated);
 

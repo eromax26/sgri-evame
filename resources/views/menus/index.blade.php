@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Planification des menus</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-calendar3"></i>Planification des menus</h5>
 
-<a href="{{ route('menus.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau menu de la semaine</a>
+<a href="{{ route('menus.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouveau menu de la semaine</a>
 
 <table class="table table-striped bg-white sg-table">
     <thead>
@@ -30,18 +30,24 @@
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('menus.edit', $menu) }}" class="btn btn-sm sg-btn-outline">Gerer</a>
-                    @unless ($menu->estPublie())
-                        <form method="POST" action="{{ route('menus.destroy', $menu) }}" class="d-inline" onsubmit="return confirm('Supprimer ce menu brouillon ?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm sg-btn-outline-danger">Supprimer</button>
-                        </form>
-                    @endunless
+                    <div class="sg-actions">
+                        @if ($menu->estPublie())
+                            <a href="{{ route('menus.edit', $menu) }}" class="sg-btn-icon" title="Consulter" aria-label="Consulter"><i class="bi bi-eye"></i></a>
+                        @else
+                            <a href="{{ route('menus.edit', $menu) }}" class="sg-btn-icon" title="Gerer" aria-label="Gerer"><i class="bi bi-pencil"></i></a>
+                        @endif
+                        @unless ($menu->estPublie())
+                            <form method="POST" action="{{ route('menus.destroy', $menu) }}" onsubmit="return confirm('Supprimer ce menu brouillon ?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="sg-btn-icon sg-btn-icon--danger" title="Supprimer" aria-label="Supprimer"><i class="bi bi-trash"></i></button>
+                            </form>
+                        @endunless
+                    </div>
                 </td>
             </tr>
         @empty
-            <tr><td colspan="3" class="text-center text-muted">Aucun menu crée.</td></tr>
+            <tr><td colspan="3" class="text-center text-muted"><i class="bi bi-calendar3 me-2"></i>Aucun menu crée.</td></tr>
         @endforelse
     </tbody>
 </table>

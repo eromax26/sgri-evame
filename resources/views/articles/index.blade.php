@@ -8,16 +8,16 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Articles de stock</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-box-seam"></i>Articles de stock</h5>
 
-<a href="{{ route('articles.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouvel article</a>
+<a href="{{ route('articles.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouvel article</a>
 
 <form method="GET" action="{{ route('articles.index') }}" class="row g-2 mb-3">
     <div class="col-auto">
         <input type="text" name="recherche" class="form-control" placeholder="Rechercher un article" value="{{ request('recherche') }}">
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn sg-btn-navy">Rechercher</button>
+        <button type="submit" class="btn sg-btn-navy"><i class="bi bi-search"></i> Rechercher</button>
     </div>
 </form>
 
@@ -47,11 +47,13 @@
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('articles.edit', $article) }}" class="btn btn-sm sg-btn-outline">Modifier</a>
+                    <div class="sg-actions">
+                        <a href="{{ route('articles.edit', $article) }}" class="sg-btn-icon" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
+                    </div>
                 </td>
             </tr>
         @empty
-            <tr><td colspan="6" class="text-center text-muted">Aucun article enregistre.</td></tr>
+            <tr><td colspan="6" class="text-center text-muted"><i class="bi bi-box-seam me-2"></i>Aucun article enregistré.</td></tr>
         @endforelse
     </tbody>
 </table>

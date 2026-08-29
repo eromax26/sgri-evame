@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Gestion des collaborateurs</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-people"></i>Gestion des collaborateurs</h5>
 
-<a href="{{ route('collaborateurs.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau collaborateur</a>
+<a href="{{ route('collaborateurs.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouveau collaborateur</a>
 
 <form method="GET" action="{{ route('collaborateurs.index') }}" class="row g-2 mb-3">
     <div class="col-auto">
@@ -18,7 +18,7 @@
     </div>
     <div class="col-auto">
         <select name="departement_id" class="form-select">
-            <option value="">Tous les departements</option>
+            <option value="">Tous les départements</option>
             @foreach ($departements as $dep)
                 <option value="{{ $dep->id }}" @selected(request('departement_id') == $dep->id)>{{ $dep->nom }}</option>
             @endforeach
@@ -33,7 +33,7 @@
         </select>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn sg-btn-navy">Rechercher</button>
+        <button type="submit" class="btn sg-btn-navy"><i class="bi bi-search"></i> Rechercher</button>
     </div>
 </form>
 
@@ -65,17 +65,19 @@
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('collaborateurs.edit', $c) }}" class="btn btn-sm sg-btn-outline">Modifier</a>
-                    <a href="{{ route('roles.attribuerForm', $c) }}" class="btn btn-sm sg-btn-outline">Gérer les roles</a>
-                    <form method="POST" action="{{ route('collaborateurs.destroy', $c) }}" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm sg-btn-outline-danger">Désactiver</button>
-                    </form>
+                    <div class="sg-actions">
+                        <a href="{{ route('collaborateurs.edit', $c) }}" class="sg-btn-icon" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
+                        <a href="{{ route('roles.attribuerForm', $c) }}" class="sg-btn-icon" title="Gérer les roles" aria-label="Gérer les roles"><i class="bi bi-shield-check"></i></a>
+                        <form method="POST" action="{{ route('collaborateurs.destroy', $c) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="sg-btn-icon sg-btn-icon--danger" title="Désactiver" aria-label="Désactiver"><i class="bi bi-slash-circle"></i></button>
+                        </form>
+                    </div>
                 </td>
             </tr>
         @empty
-            <tr><td colspan="6" class="text-center text-muted">Aucun collaborateur trouvé.</td></tr>
+            <tr><td colspan="6" class="text-center text-muted"><i class="bi bi-people me-2"></i>Aucun collaborateur trouvé.</td></tr>
         @endforelse
     </tbody>
 </table>

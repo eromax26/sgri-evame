@@ -81,6 +81,7 @@ Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {
     Route::post('menus/{menu}/publier', [MenuController::class, 'publier'])->name('menus.publier');
     Route::delete('menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
     Route::put('menus/{menu}/lignes', [MenuController::class, 'updateLignes'])->name('menus.updateLignes');
+    Route::put('menus/{menu}/lignes/{ligne}/plat', [MenuController::class, 'remplacerPlat'])->name('menus.remplacerPlat');
 
     Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('articles/create', [ArticleController::class, 'create'])->name('articles.create');

@@ -66,7 +66,7 @@ class MenuController extends Controller
 
     public function edit(Menu $menu)
     {
-        $lignesMenu = $menu->lignesMenu()->orderBy('date_repas')->get();
+        $lignesMenu = $menu->lignesMenu()->withCount('selections')->orderBy('date_repas')->get();
         $plats = Plat::where('statut', 'actif')->orderBy('libelle')->get();
 
         return view('menus.edit', compact('menu', 'lignesMenu', 'plats'));
@@ -86,6 +86,31 @@ class MenuController extends Controller
         });
 
         return redirect()->route('menus.edit', $menu)->with('success', 'Menu enregistre.');
+    }
+
+    public function remplacerPlat(Request $request, Menu $menu, LigneMenu $ligne)
+    {
+        abort_unless($ligne->menu_id === $menu->id, 404);
+
+        if (! $menu->estPublie()) {
+            return back()->with('error', 'Ce menu est encore en brouillon, modifiez-le directement depuis le tableau.');
+        }
+
+        if ($ligne->date_repas->toDateString() < now()->toDateString()) {
+            return back()->with('error', 'Ce jour est deja passe, le plat ne peut plus etre change.');
+        }
+
+        if ($ligne->selections()->exists()) {
+            return back()->with('error', 'Des collaborateurs ont deja selectionne ce repas, le plat ne peut plus etre change.');
+        }
+
+        $validated = $request->validate([
+            'plat_id' => ['required', 'exists:plats,id'],
+        ]);
+
+        $ligne->update(['plat_id' => $validated['plat_id']]);
+
+        return redirect()->route('menus.edit', $menu)->with('success', 'Plat remplace pour le ' . $ligne->date_repas->translatedFormat('l d/m/Y') . '.');
     }
 
     public function publier(Menu $menu)

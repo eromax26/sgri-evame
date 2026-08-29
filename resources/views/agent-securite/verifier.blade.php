@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Vérifier un ticket</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-qr-code-scan"></i>Vérifier un ticket</h5>
 
 <form method="GET" action="{{ route('agent.verifierForm') }}" class="row g-2 align-items-end mb-3">
     <div class="col-auto">
@@ -20,10 +20,10 @@
         <input type="text" name="recherche" class="form-control" placeholder="Matricule, nom ou numéro de ticket" value="{{ request('recherche') }}" autofocus>
     </div>
     <div class="col-auto">
-        <button type="submit" class="btn sg-btn-navy">Rechercher</button>
+        <button type="submit" class="btn sg-btn-navy"><i class="bi bi-search"></i> Rechercher</button>
     </div>
     <div class="col-auto">
-        <a href="{{ route('agent.verifierForm') }}" class="btn sg-btn-outline">Réinitialiser</a>
+        <a href="{{ route('agent.verifierForm') }}" class="btn sg-btn-outline"><i class="bi bi-arrow-counterclockwise"></i> Réinitialiser</a>
     </div>
 </form>
 
@@ -62,7 +62,7 @@
                         <form method="POST" action="{{ route('agent.confirmerRetrait') }}">
                             @csrf
                             <input type="hidden" name="selection_id" value="{{ $ticket->id }}">
-                            <button type="submit" class="btn btn-sm sg-btn-primary">Valider l'entrée</button>
+                            <button type="submit" class="btn btn-sm sg-btn-primary"><i class="bi bi-check2-circle"></i> Valider l'entrée</button>
                         </form>
                     @else
                         <span class="text-muted small">{{ $ticket->date_retrait->format('H:i') }}</span>
@@ -73,9 +73,9 @@
             <tr>
                 <td colspan="6" class="text-center text-muted">
                     @if (request('recherche'))
-                        Aucun résultat pour cette recherche.
+                        <i class="bi bi-search me-2"></i>Aucun résultat pour cette recherche.
                     @else
-                        Aucun ticket pour cette date.
+                        <i class="bi bi-ticket-perforated me-2"></i>Aucun ticket pour cette date.
                     @endif
                 </td>
             </tr>

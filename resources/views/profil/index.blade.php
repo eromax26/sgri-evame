@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Mon profil</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-person-circle"></i>Mon profil</h5>
 
 <div class="row">
     <div class="col-md-6">
@@ -65,7 +65,7 @@
                         <label class="form-label">Confirmer le nouveau mot de passe *</label>
                         <input type="password" name="nouveau_mot_de_passe_confirmation" class="form-control">
                     </div>
-                    <button type="submit" class="btn sg-btn-primary">Modifier le mot de passe</button>
+                    <button type="submit" class="btn sg-btn-primary"><i class="bi bi-key"></i> Modifier le mot de passe</button>
                 </form>
             </div>
         </div>

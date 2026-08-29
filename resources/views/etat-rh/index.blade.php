@@ -8,13 +8,13 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Etat mensuel des retenues</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-file-earmark-spreadsheet"></i>Etat mensuel des retenues</h5>
 
 <form method="GET" action="{{ route('etat-rh.index') }}" class="d-flex gap-2 mb-3">
     <input type="month" name="periode" class="form-control" style="max-width: 200px;" value="{{ $periode }}">
-    <button type="submit" class="btn sg-btn-navy">Afficher</button>
+    <button type="submit" class="btn sg-btn-navy"><i class="bi bi-search"></i> Afficher</button>
     @if (count($etat) > 0)
-        <a href="{{ route('etat-rh.export', ['periode' => $periode]) }}" class="btn sg-btn-outline">Exporter en Excel</a>
+        <a href="{{ route('etat-rh.export', ['periode' => $periode]) }}" class="btn sg-btn-outline"><i class="bi bi-file-earmark-excel"></i> Exporter en Excel</a>
     @endif
 </form>
 
@@ -44,7 +44,7 @@
                 <td>{{ number_format($ligne['montant'], 0, ',', ' ') }} F</td>
             </tr>
         @empty
-            <tr><td colspan="4" class="text-center text-muted">Aucune consommation sur cette période.</td></tr>
+            <tr><td colspan="4" class="text-center text-muted"><i class="bi bi-file-earmark-spreadsheet me-2"></i>Aucune consommation sur cette période.</td></tr>
         @endforelse
     </tbody>
 </table>
@@ -54,7 +54,7 @@
         @csrf
         <input type="hidden" name="periode" value="{{ $periode }}">
         <button type="submit" class="btn sg-btn-primary">
-            {{ $statutVerrouillage === 'partiel' ? "Verrouiller les {$resteAVerrouiller} repas restants" : "Valider et vérrouiller l'etat" }}
+            <i class="bi bi-lock"></i> {{ $statutVerrouillage === 'partiel' ? "Verrouiller les {$resteAVerrouiller} repas restants" : "Valider et vérrouiller l'etat" }}
         </button>
     </form>
 @endif

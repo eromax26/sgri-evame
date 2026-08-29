@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Nouvel article</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-box-seam"></i>Nouvel article</h5>
 
 <div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
@@ -30,7 +30,7 @@
                 <div class="form-text">Une alerte s'affichera quand le stock descend a ce niveau.</div>
                 @error('seuil_minimum') <div class="text-danger small">{{ $message }}</div> @enderror
             </div>
-            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
             <a href="{{ route('articles.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

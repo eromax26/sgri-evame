@@ -8,14 +8,14 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Nouveau role</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-shield-lock"></i>Nouveau role</h5>
 
 <div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
         <form method="POST" action="{{ route('roles.store') }}">
             @csrf
             <div class="mb-3">
-                <label class="form-label">Libelle *</label>
+                <label class="form-label">Libellé *</label>
                 <input type="text" name="libelle" class="form-control" value="{{ old('libelle') }}">
                 @error('libelle') <div class="text-danger small">{{ $message }}</div> @enderror
             </div>
@@ -23,7 +23,7 @@
                 <label class="form-label">Description</label>
                 <input type="text" name="description" class="form-control" value="{{ old('description') }}">
             </div>
-            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
             <a href="{{ route('roles.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

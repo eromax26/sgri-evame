@@ -8,9 +8,9 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Mouvements de stock</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-arrow-left-right"></i>Mouvements de stock</h5>
 
-<a href="{{ route('mouv-stocks.create') }}" class="btn sg-btn-primary btn-sm mb-3">+ Nouveau mouvement</a>
+<a href="{{ route('mouv-stocks.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouveau mouvement</a>
 
 <table class="table table-striped bg-white sg-table">
     <thead>
@@ -46,7 +46,7 @@
                 <td>{{ $mouv->collaborateur->nom }} {{ $mouv->collaborateur->prenom }}</td>
             </tr>
         @empty
-            <tr><td colspan="6" class="text-center text-muted">Aucun mouvement enregistre.</td></tr>
+            <tr><td colspan="6" class="text-center text-muted"><i class="bi bi-arrow-left-right me-2"></i>Aucun mouvement enregistre.</td></tr>
         @endforelse
     </tbody>
 </table>

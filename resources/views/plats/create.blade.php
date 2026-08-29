@@ -8,11 +8,11 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Nouveau plat</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-egg-fried"></i>Nouveau plat</h5>
 
 <div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
-        <form method="POST" action="{{ route('plats.store') }}">
+        <form method="POST" action="{{ route('plats.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label class="form-label">Code du plat *</label>
@@ -37,7 +37,12 @@
                 <input type="number" name="prix" class="form-control" value="{{ old('prix') }}" step="1" min="0">
                 @error('prix') <div class="text-danger small">{{ $message }}</div> @enderror
             </div>
-            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
+            <div class="mb-3">
+                <label class="form-label">Photo</label>
+                <input type="file" name="photo" class="form-control" accept="image/*">
+                @error('photo') <div class="text-danger small">{{ $message }}</div> @enderror
+            </div>
+            <button type="submit" class="btn sg-btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
             <a href="{{ route('plats.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

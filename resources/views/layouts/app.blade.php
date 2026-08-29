@@ -21,55 +21,55 @@
     <nav class="sg-sidebar-nav">
     @if (auth()->user()->aLeRole('Administrateur DSII'))
         <div class="sg-nav-title">Administration</div>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}">Dashboard</a>
-        <a href="{{ route('collaborateurs.index') }}" class="sg-nav-link {{ request()->routeIs('collaborateurs.*') ? 'sg-active' : '' }}">Collaborateurs</a>
-        <a href="{{ route('roles.index') }}" class="sg-nav-link {{ request()->routeIs('roles.*') ? 'sg-active' : '' }}">Roles</a>
-        <a href="{{ route('societes.index') }}" class="sg-nav-link {{ request()->routeIs('societes.*') ? 'sg-active' : '' }}">Sociétés</a>
-        <a href="{{ route('departements.index') }}" class="sg-nav-link {{ request()->routeIs('departements.*') ? 'sg-active' : '' }}">Départements</a>
+        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-speedometer2 sg-nav-icon"></i>Dashboard</a>
+        <a href="{{ route('collaborateurs.index') }}" class="sg-nav-link {{ request()->routeIs('collaborateurs.*') ? 'sg-active' : '' }}"><i class="bi bi-people sg-nav-icon"></i>Collaborateurs</a>
+        <a href="{{ route('roles.index') }}" class="sg-nav-link {{ request()->routeIs('roles.*') ? 'sg-active' : '' }}"><i class="bi bi-shield-lock sg-nav-icon"></i>Roles</a>
+        <a href="{{ route('societes.index') }}" class="sg-nav-link {{ request()->routeIs('societes.*') ? 'sg-active' : '' }}"><i class="bi bi-building sg-nav-icon"></i>Sociétés</a>
+        <a href="{{ route('departements.index') }}" class="sg-nav-link {{ request()->routeIs('departements.*') ? 'sg-active' : '' }}"><i class="bi bi-diagram-3 sg-nav-icon"></i>Départements</a>
     @endif
 
     @if (auth()->user()->aLeRole('Collaborateur'))
         <div class="sg-nav-title">Mon espace</div>
-        <a href="{{ route('selection.index') }}" class="sg-nav-link {{ request()->routeIs('selection.index') ? 'sg-active' : '' }}">Menu de la semaine</a>
-        <a href="{{ route('selection.tickets') }}" class="sg-nav-link {{ request()->routeIs('selection.tickets') ? 'sg-active' : '' }}">Mes tickets</a>
-        <a href="{{ route('selection.historique') }}" class="sg-nav-link {{ request()->routeIs('selection.historique') ? 'sg-active' : '' }}">Historique des repas</a>
+        <a href="{{ route('selection.index') }}" class="sg-nav-link {{ request()->routeIs('selection.index') ? 'sg-active' : '' }}"><i class="bi bi-calendar-week sg-nav-icon"></i>Menu de la semaine</a>
+        <a href="{{ route('selection.tickets') }}" class="sg-nav-link {{ request()->routeIs('selection.tickets') ? 'sg-active' : '' }}"><i class="bi bi-ticket-perforated sg-nav-icon"></i>Mes tickets</a>
+        <a href="{{ route('selection.historique') }}" class="sg-nav-link {{ request()->routeIs('selection.historique') ? 'sg-active' : '' }}"><i class="bi bi-clock-history sg-nav-icon"></i>Historique des repas</a>
     @endif
 
     @if (auth()->user()->aLeRole('Responsable cantine'))
         <div class="sg-nav-title">Restauration</div>
-        <a href="{{ route('plats.index') }}" class="sg-nav-link {{ request()->routeIs('plats.*') ? 'sg-active' : '' }}">Catalogue des plats</a>
-        <a href="{{ route('menus.index') }}" class="sg-nav-link {{ request()->routeIs('menus.index') ? 'sg-active' : '' }}">Planification du menu</a>
-        <a href="{{ route('menus.previsions') }}" class="sg-nav-link {{ request()->routeIs('menus.previsions') ? 'sg-active' : '' }}">Prévisions de préparation</a>
+        <a href="{{ route('plats.index') }}" class="sg-nav-link {{ request()->routeIs('plats.*') ? 'sg-active' : '' }}"><i class="bi bi-egg-fried sg-nav-icon"></i>Catalogue des plats</a>
+        <a href="{{ route('menus.index') }}" class="sg-nav-link {{ request()->routeIs('menus.index') ? 'sg-active' : '' }}"><i class="bi bi-calendar3 sg-nav-icon"></i>Planification du menu</a>
+        <a href="{{ route('menus.previsions') }}" class="sg-nav-link {{ request()->routeIs('menus.previsions') ? 'sg-active' : '' }}"><i class="bi bi-graph-up-arrow sg-nav-icon"></i>Prévisions de préparation</a>
 
         <div class="sg-nav-title">Gestion du stock</div>
-        <a href="{{ route('articles.index') }}" class="sg-nav-link {{ request()->routeIs('articles.*') ? 'sg-active' : '' }}">Articles</a>
-        <a href="{{ route('mouv-stocks.index') }}" class="sg-nav-link {{ request()->routeIs('mouv-stocks.*') ? 'sg-active' : '' }}">Mouvements de stock</a>
+        <a href="{{ route('articles.index') }}" class="sg-nav-link {{ request()->routeIs('articles.*') ? 'sg-active' : '' }}"><i class="bi bi-box-seam sg-nav-icon"></i>Articles</a>
+        <a href="{{ route('mouv-stocks.index') }}" class="sg-nav-link {{ request()->routeIs('mouv-stocks.*') ? 'sg-active' : '' }}"><i class="bi bi-arrow-left-right sg-nav-icon"></i>Mouvements de stock</a>
 
         <div class="sg-nav-title">Pilotage</div>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}">Statistiques</a>
+        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-bar-chart-line sg-nav-icon"></i>Statistiques</a>
     @endif
 
    @if (auth()->user()->aLeRole('Agent de securite'))
         <div class="sg-nav-title">Tickets</div>
-        <a href="{{ route('agent.demandes') }}" class="sg-nav-link {{ request()->routeIs('agent.demandes') ? 'sg-active' : '' }}">Demandes en attente</a>
-        <a href="{{ route('agent.verifierForm') }}" class="sg-nav-link {{ request()->routeIs('agent.verifierForm') ? 'sg-active' : '' }}">Vérifier un ticket</a>
-        <a href="{{ route('agent.journal') }}" class="sg-nav-link {{ request()->routeIs('agent.journal') ? 'sg-active' : '' }}">Journal des passages</a>
+        <a href="{{ route('agent.demandes') }}" class="sg-nav-link {{ request()->routeIs('agent.demandes') ? 'sg-active' : '' }}"><i class="bi bi-inbox sg-nav-icon"></i>Demandes en attente</a>
+        <a href="{{ route('agent.verifierForm') }}" class="sg-nav-link {{ request()->routeIs('agent.verifierForm') ? 'sg-active' : '' }}"><i class="bi bi-qr-code-scan sg-nav-icon"></i>Vérifier un ticket</a>
+        <a href="{{ route('agent.journal') }}" class="sg-nav-link {{ request()->routeIs('agent.journal') ? 'sg-active' : '' }}"><i class="bi bi-journal-text sg-nav-icon"></i>Journal des passages</a>
     @endif
 
     @if (auth()->user()->aLeRole('Ressources Humaines'))
         <div class="sg-nav-title">Ressources humaines</div>
-        <a href="{{ route('etat-rh.index') }}" class="sg-nav-link {{ request()->routeIs('etat-rh.index') ? 'sg-active' : '' }}">Etat mensuel</a>
-        <a href="{{ route('etat-rh.historique') }}" class="sg-nav-link {{ request()->routeIs('etat-rh.historique') ? 'sg-active' : '' }}">Historique des états</a>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}">Statistiques</a>
+        <a href="{{ route('etat-rh.index') }}" class="sg-nav-link {{ request()->routeIs('etat-rh.index') ? 'sg-active' : '' }}"><i class="bi bi-file-earmark-spreadsheet sg-nav-icon"></i>Etat mensuel</a>
+        <a href="{{ route('etat-rh.historique') }}" class="sg-nav-link {{ request()->routeIs('etat-rh.historique') ? 'sg-active' : '' }}"><i class="bi bi-archive sg-nav-icon"></i>Historique des états</a>
+        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-bar-chart-line sg-nav-icon"></i>Statistiques</a>
     @endif
 
     @if (auth()->user()->aLeRole('Direction Generale'))
         <div class="sg-nav-title">Pilotage</div>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}">Tableau de bord</a>
+        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-speedometer2 sg-nav-icon"></i>Tableau de bord</a>
     @endif
 
     <div class="sg-nav-title">Mon compte</div>
-    <a href="{{ route('profil.index') }}" class="sg-nav-link {{ request()->routeIs('profil.*') ? 'sg-active' : '' }}">Mon profil</a>
+    <a href="{{ route('profil.index') }}" class="sg-nav-link {{ request()->routeIs('profil.*') ? 'sg-active' : '' }}"><i class="bi bi-person-circle sg-nav-icon"></i>Mon profil</a>
     </nav>
 </div>
 
@@ -94,11 +94,11 @@
     </div>
 
     @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill"></i>{{ session('success') }}</div>
     @endif
 
     @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
+        <div class="alert alert-danger d-flex align-items-center gap-2"><i class="bi bi-exclamation-triangle-fill"></i>{{ session('error') }}</div>
     @endif
 
     @yield('contenu')

@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Mes tickets</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-ticket-perforated"></i>Mes tickets</h5>
 
 <table class="table table-striped bg-white sg-table">
     <thead>
@@ -36,7 +36,7 @@
                     @if ($ticket->statut === 'demande')
                         <span class="sg-pill sg-pill--warn">En attente d'impression</span>
                     @else
-                        <span class="sg-pill sg-pill--ok">Ticket pret a retirer</span>
+                        <span class="sg-pill sg-pill--ok">Ticket prèt à retirer</span>
                     @endif
                 </td>
                 <td>
@@ -46,13 +46,13 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="5" class="text-center text-muted">Aucun ticket en cours.</td></tr>
+            <tr><td colspan="5" class="text-center text-muted"><i class="bi bi-ticket-perforated me-2"></i>Aucun ticket en cours.</td></tr>
         @endforelse
     </tbody>
 </table>
 
 <p class="text-muted small">
-    Presentez votre ticket imprime a l'agent de securite au hall d'entree de la cantine, le jour du repas.
+    Presentez votre ticket imprimé à l'agent de sécurité au hall d'entrée de la cantine, le jour du repas.
 </p>
 
 @endsection

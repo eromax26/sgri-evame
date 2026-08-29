@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-1">Roles de {{ $collaborateur->nom }} {{ $collaborateur->prenom }}</h5>
+<h5 class="sg-page-title mb-1"><i class="bi bi-shield-check"></i>Roles de {{ $collaborateur->nom }} {{ $collaborateur->prenom }}</h5>
 <p class="text-muted small mb-4">Matricule : {{ $collaborateur->matricule }}</p>
 
 <div class="card sg-card-form shadow-sm border-0 mb-4">
@@ -21,7 +21,7 @@
                     <option value="{{ $role->id }}">{{ $role->libelle }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="btn sg-btn-primary text-nowrap">Attribuer</button>
+            <button type="submit" class="btn sg-btn-primary text-nowrap"><i class="bi bi-check2"></i> Attribuer</button>
         </form>
     </div>
 </div>
@@ -37,16 +37,16 @@
                     <form method="POST" action="{{ route('acces.retirer', $acces) }}">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm sg-btn-outline-danger">Retirer</button>
+                        <button type="submit" class="btn btn-sm sg-btn-outline-danger"><i class="bi bi-x-circle"></i> Retirer</button>
                     </form>
                 </td>
             </tr>
         @empty
-            <tr><td class="text-muted">Aucun role attribue pour l'instant.</td></tr>
+            <tr><td class="text-muted">Aucun role attribué pour l'instant.</td></tr>
         @endforelse
     </tbody>
 </table>
 
-<a href="{{ route('collaborateurs.index') }}" class="btn sg-btn-outline btn-sm mt-3">Retour a la liste</a>
+<a href="{{ route('collaborateurs.index') }}" class="btn sg-btn-outline btn-sm mt-3"><i class="bi bi-arrow-left"></i> Retour à la liste</a>
 
 @endsection

@@ -10,7 +10,7 @@
 
 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
     <div>
-        <h5 class="sg-page-title mb-1">Menu de la semaine</h5>
+        <h5 class="sg-page-title mb-1"><i class="bi bi-calendar-week"></i>Menu de la semaine</h5>
         <div class="text-muted small">Du {{ $debutSemaine->translatedFormat('l d') }} au {{ $finSemaine->translatedFormat('l d F Y') }}</div>
     </div>
     <div class="d-flex gap-2">
@@ -24,7 +24,7 @@
 </div>
 
 @if (! $menu)
-    <p class="text-center text-muted py-4">Aucun menu publié pour cette semaine.</p>
+    <p class="text-center text-muted py-4"><i class="bi bi-calendar-week d-block mb-2" style="font-size: 1.6rem;"></i>Aucun menu publié pour cette semaine.</p>
 @else
     @php
         $nbDejaSelectionnes = $jours->filter(fn ($j) => $j['maSelection'])->count();
@@ -65,15 +65,15 @@
                                 @endif
 
                                 @if ($estMoi)
-                                    <button type="button" class="btn sg-btn-primary btn-sm w-100" disabled>&check; Sélectionné</button>
+                                    <button type="button" class="btn sg-btn-primary btn-sm w-100" disabled><i class="bi bi-check2-circle"></i> Sélectionné</button>
                                 @elseif ($estOuvert)
                                     <label class="sg-meal-toggle-label">
                                         <input type="checkbox" name="lignes[]" value="{{ $ligne->id }}" class="sg-meal-toggle" data-prix="{{ (float) $ligne->plat->prix }}" hidden>
-                                        <span class="btn sg-btn-outline-danger btn-sm w-100 sg-meal-toggle-off">Sélectionner ce repas</span>
-                                        <span class="btn sg-btn-primary btn-sm w-100 sg-meal-toggle-on">&check; Sélectionne</span>
-                                    </label>    
+                                        <span class="btn sg-btn-outline-danger btn-sm w-100 sg-meal-toggle-off"><i class="bi bi-plus-circle"></i> Sélectionner ce repas</span>
+                                        <span class="btn sg-btn-primary btn-sm w-100 sg-meal-toggle-on"><i class="bi bi-check2-circle"></i> Sélectionne</span>
+                                    </label>
                                 @else
-                                    <button type="button" class="btn btn-outline-secondary btn-sm w-100" disabled>Non disponible</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm w-100" disabled><i class="bi bi-slash-circle"></i> Non disponible</button>
                                 @endif
                             @else
                                 <div class="sg-meal-card-titre text-muted">Aucun repas prevu</div>
@@ -90,7 +90,7 @@
                 &middot; Montant estimé : <span id="sg-selection-total">{{ number_format($montantDejaSelectionne, 0, ',', ' ') }}</span> F CFA
                 <div class="text-muted small">Le montant sera retenu sur votre salaire en fin de mois.</div>
             </div>
-            <button type="submit" class="btn sg-btn-primary" id="sg-btn-valider" disabled>Valider ma sélection</button>
+            <button type="submit" class="btn sg-btn-primary" id="sg-btn-valider" disabled><i class="bi bi-check2-circle"></i> Valider ma sélection</button>
         </div>
     </form>
 

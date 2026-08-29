@@ -8,11 +8,11 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Journal des passages</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-journal-text"></i>Journal des passages</h5>
 
 <form method="GET" action="{{ route('agent.journal') }}" class="d-flex gap-2 mb-3">
     <input type="date" name="date" class="form-control" style="max-width: 200px;" value="{{ $date }}">
-    <button type="submit" class="btn sg-btn-navy">Afficher</button>
+    <button type="submit" class="btn sg-btn-navy"><i class="bi bi-search"></i> Afficher</button>
 </form>
 
 <div class="card shadow-sm border-0 mb-3" style="max-width: 300px;">
@@ -46,7 +46,7 @@
                 <td>{{ $passage->agentSecurite->nom ?? '—' }} {{ $passage->agentSecurite->prenom ?? '' }}</td>
             </tr>
         @empty
-            <tr><td colspan="6" class="text-center text-muted">Aucun passage enregistre pour cette date.</td></tr>
+            <tr><td colspan="6" class="text-center text-muted"><i class="bi bi-journal-text me-2"></i>Aucun passage enregistré pour cette date.</td></tr>
         @endforelse
     </tbody>
 </table>

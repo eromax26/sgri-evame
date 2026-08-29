@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-3">Prévisions de préparation</h5>
+<h5 class="sg-page-title mb-3"><i class="bi bi-graph-up-arrow"></i>Prévisions de préparation</h5>
 
 <p class="text-muted small">
     Nombre de repas reserves par les collaborateurs pour les 7 prochains jours.
@@ -40,7 +40,7 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="4" class="text-center text-muted">Aucune reservation pour les 7 prochains jours.</td></tr>
+            <tr><td colspan="4" class="text-center text-muted"><i class="bi bi-graph-up-arrow me-2"></i>Aucune reservation pour les 7 prochains jours.</td></tr>
         @endforelse
     </tbody>
 </table>

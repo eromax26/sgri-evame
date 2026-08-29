@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Modifier {{ $collaborateur->nom }} {{ $collaborateur->prenom }}</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-people"></i>Modifier {{ $collaborateur->nom }} {{ $collaborateur->prenom }}</h5>
 
 <div class="card sg-card-form-lg shadow-sm border-0">
     <div class="card-body">
@@ -90,7 +90,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn sg-btn-primary">Enregistrer les modifications</button>
+            <button type="submit" class="btn sg-btn-primary"><i class="bi bi-save"></i> Enregistrer les modifications</button>
             <a href="{{ route('collaborateurs.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

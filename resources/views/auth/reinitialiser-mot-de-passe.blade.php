@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>SGRI - Réinitialiser le mot de passe</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -26,8 +27,8 @@
             <div class="sg-auth-title-sub">Choisissez un nouveau mot de passe pour votre compte.</div>
 
             @if ($errors->any())
-                <div class="alert alert-danger py-2 small">
-                    {{ $errors->first() }}
+                <div class="alert alert-danger py-2 small d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle-fill"></i>{{ $errors->first() }}
                 </div>
             @endif
 

@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Demandes de tickets en attente</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-inbox"></i>Demandes de tickets en attente</h5>
 
 <form method="POST" action="{{ route('agent.imprimer') }}">
     @csrf
@@ -33,7 +33,7 @@
                     <td>{{ $ligne->plat->libelle }}</td>
                 </tr>
             @empty
-                <tr><td colspan="4" class="text-center text-muted">Aucune demande en attente.</td></tr>
+                <tr><td colspan="4" class="text-center text-muted"><i class="bi bi-inbox me-2"></i>Aucune demande en attente.</td></tr>
             @endforelse
         </tbody>
     </table>
@@ -41,10 +41,10 @@
     @if ($demandes->isNotEmpty())
         <div class="d-flex gap-2">
             <button type="submit" name="format" value="thermique" class="btn sg-btn-primary">
-                Imprimer (imprimante thermique)
+                <i class="bi bi-receipt"></i> Imprimer (imprimante thermique)
             </button>
             <button type="submit" name="format" value="a4" class="btn sg-btn-outline">
-                Imprimer (feuille A4)
+                <i class="bi bi-file-earmark-text"></i> Imprimer (feuille A4)
             </button>
         </div>
         <div class="form-text mt-2">Les tickets s'ouvriront dans une page prête à imprimer.</div>

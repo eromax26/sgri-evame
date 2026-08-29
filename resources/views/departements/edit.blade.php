@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Modifier {{ $departement->nom }}</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-diagram-3"></i>Modifier {{ $departement->nom }}</h5>
 
 <div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
@@ -29,7 +29,7 @@
                 <input type="text" name="nom" class="form-control" value="{{ old('nom', $departement->nom) }}">
                 @error('nom') <div class="text-danger small">{{ $message }}</div> @enderror
             </div>
-            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
             <a href="{{ route('departements.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

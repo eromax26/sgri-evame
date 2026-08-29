@@ -8,14 +8,16 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-2">Menu du {{ $menu->date_debut_semaine->format('d/m/Y') }} au {{ $menu->date_fin_semaine->format('d/m/Y') }}</h5>
+<h5 class="sg-page-title mb-2"><i class="bi bi-calendar3"></i>Menu du {{ $menu->date_debut_semaine->format('d/m/Y') }} au {{ $menu->date_fin_semaine->format('d/m/Y') }}</h5>
 <span class="sg-pill {{ $menu->estPublie() ? 'sg-pill--ok' : 'sg-pill--warn' }} mb-3">
     {{ $menu->estPublie() ? 'Publié' : 'Brouillon' }}
 </span>
 
-<form method="POST" action="{{ route('menus.updateLignes', $menu) }}" id="form-menu-lignes">
-    @csrf
-    @method('PUT')
+@unless ($menu->estPublie())
+    <form method="POST" action="{{ route('menus.updateLignes', $menu) }}" id="form-menu-lignes">
+        @csrf
+        @method('PUT')
+@endunless
     <table class="table table-bordered bg-white sg-table">
         <thead>
             <tr>
@@ -32,14 +34,38 @@
                         <div class="text-muted small">{{ $ligne->date_repas->format('d/m/Y') }}</div>
                     </td>
                     <td>
-                        <select name="plats[{{ $ligne->id }}]" class="form-select" @disabled($menu->estPublie())>
-                            @if (! $ligne->plat_id)
-                                <option value="">-- Choisir un plat --</option>
-                            @endif
-                            @foreach ($plats as $plat)
-                                <option value="{{ $plat->id }}" @selected($ligne->plat_id == $plat->id)>{{ $plat->libelle }}</option>
-                            @endforeach
-                        </select>
+                        @if ($menu->estPublie())
+                            @php
+                                $estAVenir = $ligne->date_repas->toDateString() >= now()->toDateString();
+                                $peutRemplacer = $estAVenir && $ligne->selections_count === 0;
+                            @endphp
+                            <div class="d-flex align-items-center gap-2">
+                                <span>{{ $ligne->plat->libelle ?? '—' }}</span>
+                                @if ($peutRemplacer)
+                                    <form method="POST" action="{{ route('menus.remplacerPlat', [$menu, $ligne]) }}" class="d-flex align-items-center gap-1" onsubmit="return confirm('Remplacer le plat de ce jour ?');">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="plat_id" class="form-select form-select-sm" style="width: auto;">
+                                            @foreach ($plats as $plat)
+                                                <option value="{{ $plat->id }}" @selected($ligne->plat_id == $plat->id)>{{ $plat->libelle }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="sg-btn-icon" title="Remplacer le plat" aria-label="Remplacer le plat"><i class="bi bi-arrow-repeat"></i></button>
+                                    </form>
+                                @elseif ($estAVenir && $ligne->selections_count > 0)
+                                    <span class="text-muted small">(deja reserve, non modifiable)</span>
+                                @endif
+                            </div>
+                        @else
+                            <select name="plats[{{ $ligne->id }}]" class="form-select">
+                                @if (! $ligne->plat_id)
+                                    <option value="">-- Choisir un plat --</option>
+                                @endif
+                                @foreach ($plats as $plat)
+                                    <option value="{{ $plat->id }}" @selected($ligne->plat_id == $plat->id)>{{ $plat->libelle }}</option>
+                                @endforeach
+                            </select>
+                        @endif
                     </td>
                     <td>
                         @if ($ligne->plat_id)
@@ -52,7 +78,9 @@
             @endforeach
         </tbody>
     </table>
-</form>
+@unless ($menu->estPublie())
+    </form>
+@endunless
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
     <a href="{{ route('menus.index') }}" class="btn sg-btn-outline"><i class="bi bi-arrow-left"></i> Retour à la liste</a>

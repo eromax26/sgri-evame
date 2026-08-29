@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Nouveau collaborateur</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-people"></i>Nouveau collaborateur</h5>
 
 <div class="card sg-card-form-lg shadow-sm border-0">
     <div class="card-body">
@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn sg-btn-primary">Enregistrer</button>
+            <button type="submit" class="btn sg-btn-primary"><i class="bi bi-save"></i> Enregistrer</button>
             <a href="{{ route('collaborateurs.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>

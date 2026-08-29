@@ -8,7 +8,7 @@
 
 @section('contenu')
 
-<h5 class="sg-page-title mb-4">Nouveau menu de la semaine</h5>
+<h5 class="sg-page-title mb-4"><i class="bi bi-calendar3"></i>Nouveau menu de la semaine</h5>
 
 <div class="card sg-card-form shadow-sm border-0">
     <div class="card-body">
@@ -20,7 +20,7 @@
                 <div class="form-text">La semaine ira automatiquement du lundi au vendredi.</div>
                 @error('date_debut_semaine') <div class="text-danger small">{{ $message }}</div> @enderror
             </div>
-            <button type="submit" class="btn sg-btn-primary">Créer le menu</button>
+            <button type="submit" class="btn sg-btn-primary"><i class="bi bi-plus-lg"></i> Créer le menu</button>
             <a href="{{ route('menus.index') }}" class="btn btn-outline-secondary">Annuler</a>
         </form>
     </div>
