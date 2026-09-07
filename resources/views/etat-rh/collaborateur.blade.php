@@ -57,7 +57,7 @@
             <th>Date du repas</th>
             <th>Plat</th>
             <th>Montant</th>
-            <th>Retiré le</th>
+            <th>Heure de retrait</th>
             <th>Numero de ticket</th>
             <th>Facturation</th>
         </tr>
@@ -68,7 +68,9 @@
                 <td>{{ ucfirst($ligne->date_repas->translatedFormat('l d/m/Y')) }}</td>
                 <td>{{ $ligne->plat?->libelle ?? 'Plat supprimé' }}</td>
                 <td>{{ number_format($ligne->prix, 0, ',', ' ') }} F</td>
-                <td class="text-muted small">{{ $ligne->date_retrait?->format('d/m/Y H:i') ?? '—' }}</td>
+                {{-- Un ticket n'est validable que le jour du repas (AgentSecuriteController::confirmerRetrait),
+                     la date de retrait est donc toujours celle affichee a gauche : seule l'heure informe. --}}
+                <td class="text-muted small">{{ $ligne->date_retrait?->format('H:i') ?? '—' }}</td>
                 <td class="text-muted small">{{ $ligne->numero_ticket }}</td>
                 <td>
                     @if ($ligne->statut_facturation === 'verrouille')
