@@ -10,6 +10,7 @@
 
 <h5 class="sg-page-title mb-4"><i class="bi bi-archive"></i>Historique des états</h5>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -41,6 +42,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 <p class="text-muted small">
     Les états vérrouillés ne peuvent plus être modifiés. Ils sont conservés a titre d'archive.

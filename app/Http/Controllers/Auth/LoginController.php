@@ -32,7 +32,7 @@ class LoginController extends Controller
 
         if ($collaborateur->statut !== 'actif') {
             return back()->withErrors([
-                'identifiant' => 'Ce compte est desactivé. Contactez l\'Administrateur DSII.',
+                'identifiant' => 'Ce compte est désactivé. Contactez l\'Administrateur DSII.',
             ])->onlyInput('identifiant');
         }
 
@@ -83,7 +83,7 @@ class LoginController extends Controller
         }
 
         if ($collaborateur->aLeRole('Responsable cantine')) {
-            return route('plats.index');
+            return route('tableau-bord.cantine');
         }
 
         if ($collaborateur->aLeRole('Agent de securite')) {

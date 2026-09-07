@@ -26,6 +26,7 @@
     <span class="sg-pill sg-pill--warn mb-3">Non verrouillé - brouillon</span>
 @endif
 
+<div class="table-responsive">
 <table class="table table-bordered bg-white sg-table">
     <thead>
         <tr>
@@ -48,6 +49,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 @if ($statutVerrouillage !== 'complet' && count($etat) > 0)
     <form method="POST" action="{{ route('etat-rh.verrouiller') }}">

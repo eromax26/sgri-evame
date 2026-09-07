@@ -10,6 +10,7 @@
 
 <h5 class="sg-page-title mb-4"><i class="bi bi-ticket-perforated"></i>Mes tickets</h5>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -50,6 +51,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 <p class="text-muted small">
     Presentez votre ticket imprimé à l'agent de sécurité au hall d'entrée de la cantine, le jour du repas.

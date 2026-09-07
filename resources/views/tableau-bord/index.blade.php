@@ -65,7 +65,11 @@
                 @forelse ($articlesEnAlerte as $article)
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>{{ $article->libelle }}</span>
-                        <span class="sg-pill sg-pill--danger">{{ $article->quantite_stock }} {{ $article->unite_mesure }}</span>
+                        @if ($article->estEpuise())
+                            <span class="sg-pill sg-pill--critique">Stock épuisé !</span>
+                        @else
+                            <span class="sg-pill sg-pill--danger">{{ $article->quantite_stock }} {{ $article->unite_mesure }}</span>
+                        @endif
                     </div>
                 @empty
                     <div class="text-muted"><i class="bi bi-check-circle me-2"></i>Aucune alerte, tous les stocks sont au-dessus du seuil.</div>

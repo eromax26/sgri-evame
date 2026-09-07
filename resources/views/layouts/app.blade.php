@@ -21,7 +21,7 @@
     <nav class="sg-sidebar-nav">
     @if (auth()->user()->aLeRole('Administrateur DSII'))
         <div class="sg-nav-title">Administration</div>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-speedometer2 sg-nav-icon"></i>Dashboard</a>
+        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.index') ? 'sg-active' : '' }}"><i class="bi bi-speedometer2 sg-nav-icon"></i>Dashboard</a>
         <a href="{{ route('collaborateurs.index') }}" class="sg-nav-link {{ request()->routeIs('collaborateurs.*') ? 'sg-active' : '' }}"><i class="bi bi-people sg-nav-icon"></i>Collaborateurs</a>
         <a href="{{ route('roles.index') }}" class="sg-nav-link {{ request()->routeIs('roles.*') ? 'sg-active' : '' }}"><i class="bi bi-shield-lock sg-nav-icon"></i>Roles</a>
         <a href="{{ route('societes.index') }}" class="sg-nav-link {{ request()->routeIs('societes.*') ? 'sg-active' : '' }}"><i class="bi bi-building sg-nav-icon"></i>Sociétés</a>
@@ -36,6 +36,9 @@
     @endif
 
     @if (auth()->user()->aLeRole('Responsable cantine'))
+        <div class="sg-nav-title">Pilotage</div>
+        <a href="{{ route('tableau-bord.cantine') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.cantine') ? 'sg-active' : '' }}"><i class="bi bi-bar-chart-line sg-nav-icon"></i>Tableau de bord</a>
+
         <div class="sg-nav-title">Restauration</div>
         <a href="{{ route('plats.index') }}" class="sg-nav-link {{ request()->routeIs('plats.*') ? 'sg-active' : '' }}"><i class="bi bi-egg-fried sg-nav-icon"></i>Catalogue des plats</a>
         <a href="{{ route('menus.index') }}" class="sg-nav-link {{ request()->routeIs('menus.index') ? 'sg-active' : '' }}"><i class="bi bi-calendar3 sg-nav-icon"></i>Planification du menu</a>
@@ -44,9 +47,6 @@
         <div class="sg-nav-title">Gestion du stock</div>
         <a href="{{ route('articles.index') }}" class="sg-nav-link {{ request()->routeIs('articles.*') ? 'sg-active' : '' }}"><i class="bi bi-box-seam sg-nav-icon"></i>Articles</a>
         <a href="{{ route('mouv-stocks.index') }}" class="sg-nav-link {{ request()->routeIs('mouv-stocks.*') ? 'sg-active' : '' }}"><i class="bi bi-arrow-left-right sg-nav-icon"></i>Mouvements de stock</a>
-
-        <div class="sg-nav-title">Pilotage</div>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-bar-chart-line sg-nav-icon"></i>Statistiques</a>
     @endif
 
    @if (auth()->user()->aLeRole('Agent de securite'))
@@ -60,12 +60,12 @@
         <div class="sg-nav-title">Ressources humaines</div>
         <a href="{{ route('etat-rh.index') }}" class="sg-nav-link {{ request()->routeIs('etat-rh.index') ? 'sg-active' : '' }}"><i class="bi bi-file-earmark-spreadsheet sg-nav-icon"></i>Etat mensuel</a>
         <a href="{{ route('etat-rh.historique') }}" class="sg-nav-link {{ request()->routeIs('etat-rh.historique') ? 'sg-active' : '' }}"><i class="bi bi-archive sg-nav-icon"></i>Historique des états</a>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-bar-chart-line sg-nav-icon"></i>Statistiques</a>
+        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.index') ? 'sg-active' : '' }}"><i class="bi bi-bar-chart-line sg-nav-icon"></i>Statistiques</a>
     @endif
 
     @if (auth()->user()->aLeRole('Direction Generale'))
         <div class="sg-nav-title">Pilotage</div>
-        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.*') ? 'sg-active' : '' }}"><i class="bi bi-speedometer2 sg-nav-icon"></i>Tableau de bord</a>
+        <a href="{{ route('tableau-bord.index') }}" class="sg-nav-link {{ request()->routeIs('tableau-bord.index') ? 'sg-active' : '' }}"><i class="bi bi-speedometer2 sg-nav-icon"></i>Tableau de bord</a>
     @endif
 
     <div class="sg-nav-title">Mon compte</div>
@@ -75,7 +75,12 @@
 
 <div class="sg-main">
     <div class="sg-topbar d-flex justify-content-between align-items-center">
-        <div class="sg-breadcrumb">@yield('fil')</div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="sg-sidebar-toggle" id="sg-sidebar-toggle" aria-label="Ouvrir le menu">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="sg-breadcrumb">@yield('fil')</div>
+        </div>
         <div class="d-flex align-items-center gap-3">
             <div class="sg-user-info">
                 <div class="sg-user-name">{{ auth()->user()->nom }} {{ auth()->user()->prenom }}</div>
@@ -103,6 +108,36 @@
 
     @yield('contenu')
 </div>
+
+<div class="sg-sidebar-backdrop" id="sg-sidebar-backdrop"></div>
+
+<script>
+    (function () {
+        var sidebar = document.querySelector('.sg-sidebar');
+        var backdrop = document.getElementById('sg-sidebar-backdrop');
+        var toggle = document.getElementById('sg-sidebar-toggle');
+
+        function ouvrir() {
+            sidebar.classList.add('sg-sidebar--open');
+            backdrop.classList.add('sg-sidebar-backdrop--open');
+        }
+
+        function fermer() {
+            sidebar.classList.remove('sg-sidebar--open');
+            backdrop.classList.remove('sg-sidebar-backdrop--open');
+        }
+
+        toggle.addEventListener('click', function () {
+            sidebar.classList.contains('sg-sidebar--open') ? fermer() : ouvrir();
+        });
+
+        backdrop.addEventListener('click', fermer);
+
+        sidebar.querySelectorAll('.sg-nav-link').forEach(function (lien) {
+            lien.addEventListener('click', fermer);
+        });
+    })();
+</script>
 
 </body>
 </html>

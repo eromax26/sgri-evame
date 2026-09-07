@@ -33,6 +33,7 @@ class Collaborateur extends Authenticatable implements CanResetPasswordContract
         'mode_facturation',
         'photo',
         'statut',
+        'tentatives_echouees',
     ];
 
     protected $hidden = [

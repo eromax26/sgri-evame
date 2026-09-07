@@ -23,6 +23,7 @@ Route::get('/', [LoginController::class, 'showLoginForm'])->name('home');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/logout', fn () => redirect()->route('login'));
 
 Route::get('mot-de-passe-oublie', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('mot-de-passe-oublie', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'role:Administrateur DSII'])->group(function () {
     })->name('admin.roles');
 
     Route::resource('collaborateurs', CollaborateurController::class);
+    Route::post('collaborateurs/{collaborateur}/activer', [CollaborateurController::class, 'activer'])->name('collaborateurs.activer');
 
     Route::resource('roles', RoleController::class);
     Route::post('collaborateurs/{collaborateur}/acces', [RoleController::class, 'attribuer'])->name('acces.attribuer');
@@ -73,6 +75,7 @@ Route::middleware(['auth', 'role:Ressources Humaines'])->group(function () {
 
 Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {
     Route::resource('plats', PlatController::class);
+    Route::post('plats/{plat}/activer', [PlatController::class, 'activer'])->name('plats.activer');
 
     Route::get('menus', [MenuController::class, 'index'])->name('menus.index');
     Route::get('menus/create', [MenuController::class, 'create'])->name('menus.create');
@@ -97,4 +100,5 @@ Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {
 
 Route::middleware(['auth', 'role:Direction Generale,Administrateur DSII,Responsable cantine,Ressources Humaines'])->group(function () {
     Route::get('tableau-bord', [TableauBordController::class, 'index'])->name('tableau-bord.index');
+    Route::get('tableau-bord/cantine', [TableauBordController::class, 'cantine'])->name('tableau-bord.cantine');
 });

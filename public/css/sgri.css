@@ -187,6 +187,70 @@ h1, h2, h3, h4, h5, h6 {
     padding: calc(var(--sg-topbar-h) + 26px) 26px 60px;
 }
 
+/* ---------- Bouton menu (mobile) et fond du tiroir ---------- */
+.sg-sidebar-toggle {
+    display: none;
+    border: none;
+    background: transparent;
+    font-size: 21px;
+    color: var(--sg-ink);
+    padding: 4px 6px;
+    line-height: 1;
+    flex: none;
+}
+
+.sg-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 26, 37, .45);
+    z-index: 39;
+}
+
+.sg-sidebar-backdrop.sg-sidebar-backdrop--open {
+    display: block;
+}
+
+/* ---------- Sidebar en tiroir sous 992px ---------- */
+@media (max-width: 991.98px) {
+    .sg-sidebar {
+        transform: translateX(-100%);
+        transition: transform .22s ease;
+        z-index: 50;
+    }
+
+    .sg-sidebar.sg-sidebar--open {
+        transform: translateX(0);
+    }
+
+    .sg-main {
+        margin-left: 0;
+    }
+
+    .sg-topbar {
+        left: 0;
+    }
+
+    .sg-sidebar-toggle {
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .sg-main {
+        padding: calc(var(--sg-topbar-h) + 16px) 14px 40px;
+    }
+
+    .sg-topbar {
+        padding: 0 14px;
+    }
+
+    .sg-user-info {
+        display: none;
+    }
+}
+
 /* ---------- Topbar ---------- */
 .sg-topbar {
     position: fixed;
@@ -544,6 +608,16 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--sg-rouge);
 }
 
+.sg-btn-icon--ok {
+    color: var(--sg-ok);
+}
+
+.sg-btn-icon--ok:hover {
+    background-color: var(--sg-ok-bg);
+    color: var(--sg-ok);
+    border-color: var(--sg-ok);
+}
+
 .sg-btn-ok {
     background-color: var(--sg-ok);
     border: none;
@@ -621,6 +695,24 @@ h1, h2, h3, h4, h5, h6 {
 .sg-pill--info { background: var(--sg-info-bg); color: var(--sg-info); }
 .sg-pill--ok { background: var(--sg-ok-bg); color: var(--sg-ok); }
 .sg-pill--danger { background: var(--sg-rouge-050); color: var(--sg-rouge-700); }
+
+.sg-pill--critique {
+    background: var(--sg-rouge);
+    color: #ffffff;
+    font-weight: 700;
+    animation: sg-pulse 1.4s ease-in-out infinite;
+}
+
+.sg-pill--critique::before { background: #ffffff; }
+
+@media (prefers-reduced-motion: reduce) {
+    .sg-pill--critique { animation: none; }
+}
+
+@keyframes sg-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(227, 30, 36, .45); }
+    50% { box-shadow: 0 0 0 5px rgba(227, 30, 36, 0); }
+}
 
 .sg-tag {
     display: inline-block;
@@ -850,4 +942,77 @@ h1, h2, h3, h4, h5, h6 {
 .sg-selection-bar #sg-selection-count,
 .sg-selection-bar #sg-selection-total {
     font-weight: 700;
+}
+
+/* ===== Classement des plats (tableau de bord cantine) ===== */
+.sg-rang {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .45rem 0;
+}
+
+.sg-rang + .sg-rang {
+    border-top: 1px solid var(--sg-line-soft);
+}
+
+.sg-rang-num {
+    flex: none;
+    width: 1.75rem;
+    font-weight: 700;
+    color: var(--sg-bleu-marine);
+    font-variant-numeric: tabular-nums;
+}
+
+.sg-rang-nom {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--sg-ink);
+}
+
+.sg-rang-barre {
+    flex: 0 1 38%;
+    height: .5rem;
+    border-radius: 999px;
+    background: var(--sg-surface-2);
+    overflow: hidden;
+}
+
+.sg-rang-barre-remplie {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--sg-bleu-marine);
+}
+
+.sg-rang-total {
+    flex: none;
+    min-width: 5.5rem;
+    text-align: right;
+    color: var(--sg-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Plats proposes mais jamais commandes : presents mais visuellement en retrait. */
+.sg-rang--vide .sg-rang-num,
+.sg-rang--vide .sg-rang-nom {
+    color: var(--sg-muted);
+    font-weight: 400;
+}
+
+.sg-rang--vide .sg-rang-barre {
+    visibility: hidden;
+}
+
+@media (max-width: 575.98px) {
+    .sg-rang-barre {
+        display: none;
+    }
+
+    .sg-rang-total {
+        min-width: 4.5rem;
+    }
 }

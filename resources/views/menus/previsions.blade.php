@@ -14,6 +14,7 @@
     Nombre de repas reserves par les collaborateurs pour les 7 prochains jours.
 </p>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -44,5 +45,6 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 @endsection

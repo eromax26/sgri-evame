@@ -27,6 +27,7 @@
 </div>
 
 <h6 class="sg-card-header">Roles actuels</h6>
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table" style="max-width: 600px;">
     <tbody>
         @forelse ($collaborateur->acces as $acces)
@@ -46,6 +47,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 <a href="{{ route('collaborateurs.index') }}" class="btn sg-btn-outline btn-sm mt-3"><i class="bi bi-arrow-left"></i> Retour à la liste</a>
 

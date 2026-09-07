@@ -13,6 +13,7 @@
 <form method="POST" action="{{ route('agent.imprimer') }}">
     @csrf
 
+    <div class="table-responsive">
     <table class="table table-bordered bg-white sg-table">
         <thead>
             <tr>
@@ -37,6 +38,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 
     @if ($demandes->isNotEmpty())
         <div class="d-flex gap-2">

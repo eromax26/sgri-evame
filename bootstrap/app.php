@@ -18,7 +18,16 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Fait confiance aux en-tetes X-Forwarded-* (necessaire derriere un tunnel/proxy
         // comme Cloudflare Tunnel, sinon Laravel genere des URLs en http:// sur une page https).
-        $middleware->trustProxies(at: '*');
+        // X-Forwarded-Host est volontairement exclu : le faire confiance depuis n'importe
+        // quel client permettrait a un attaquant de falsifier l'hote utilise dans les liens
+        // generes (ex. lien de reinitialisation de mot de passe envoye par email).
+        $middleware->trustProxies(
+            at: '*',
+            headers: Request::HEADER_X_FORWARDED_FOR
+                | Request::HEADER_X_FORWARDED_PORT
+                | Request::HEADER_X_FORWARDED_PROTO
+                | Request::HEADER_X_FORWARDED_AWS_ELB,
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

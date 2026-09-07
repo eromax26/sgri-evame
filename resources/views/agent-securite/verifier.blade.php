@@ -32,6 +32,7 @@
     <span class="sg-pill sg-pill--ok">{{ $passes }} déjà passé(s)</span>
 </div>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -82,5 +83,6 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 @endsection

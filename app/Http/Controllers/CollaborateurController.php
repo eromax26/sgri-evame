@@ -122,4 +122,12 @@ public function update(Request $request, Collaborateur $collaborateur)
         return redirect()->route('collaborateurs.index')
             ->with('success', 'Collaborateur desactive avec succes.');
     }
+
+    public function activer(Collaborateur $collaborateur)
+    {
+        $collaborateur->update(['statut' => 'actif', 'tentatives_echouees' => 0]);
+
+        return redirect()->route('collaborateurs.index')
+            ->with('success', 'Collaborateur reactive avec succes.');
+    }
 }

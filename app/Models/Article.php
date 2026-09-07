@@ -30,8 +30,28 @@ class Article extends Model
         return $this->hasMany(MouvStock::class);
     }
 
+    public function estConfigure(): bool
+    {
+        return $this->seuil_minimum > 0;
+    }
+
+    public function estEpuise(): bool
+    {
+        return $this->quantite_stock <= 0;
+    }
+
     public function seuilAtteint(): bool
     {
-        return $this->quantite_stock <= $this->seuil_minimum;
+        return $this->estConfigure() && $this->quantite_stock <= $this->seuil_minimum;
+    }
+
+    public function scopeEnAlerte($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('quantite_stock', '<=', 0)
+                ->orWhere(function ($q2) {
+                    $q2->where('seuil_minimum', '>', 0)->whereColumn('quantite_stock', '<=', 'seuil_minimum');
+                });
+        });
     }
 }

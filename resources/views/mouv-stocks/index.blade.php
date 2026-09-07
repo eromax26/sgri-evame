@@ -12,6 +12,7 @@
 
 <a href="{{ route('mouv-stocks.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouveau mouvement</a>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -50,6 +51,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 {{ $mouvements->links() }}
 

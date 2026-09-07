@@ -28,6 +28,7 @@
     </div>
 </form>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -62,11 +63,18 @@
                 <td>
                     <div class="sg-actions">
                         <a href="{{ route('plats.edit', $plat) }}" class="sg-btn-icon" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
-                        <form method="POST" action="{{ route('plats.destroy', $plat) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="sg-btn-icon sg-btn-icon--danger" title="Désactiver" aria-label="Désactiver"><i class="bi bi-slash-circle"></i></button>
-                        </form>
+                        @if ($plat->statut === 'actif')
+                            <form method="POST" action="{{ route('plats.destroy', $plat) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="sg-btn-icon sg-btn-icon--danger" title="Désactiver" aria-label="Désactiver"><i class="bi bi-slash-circle"></i></button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('plats.activer', $plat) }}">
+                                @csrf
+                                <button type="submit" class="sg-btn-icon sg-btn-icon--ok" title="Réactiver" aria-label="Réactiver"><i class="bi bi-arrow-clockwise"></i></button>
+                            </form>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -75,6 +83,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 {{ $plats->links() }}
 

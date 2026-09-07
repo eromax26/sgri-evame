@@ -37,6 +37,7 @@
     </div>
 </form>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -68,11 +69,18 @@
                     <div class="sg-actions">
                         <a href="{{ route('collaborateurs.edit', $c) }}" class="sg-btn-icon" title="Modifier" aria-label="Modifier"><i class="bi bi-pencil"></i></a>
                         <a href="{{ route('roles.attribuerForm', $c) }}" class="sg-btn-icon" title="Gérer les roles" aria-label="Gérer les roles"><i class="bi bi-shield-check"></i></a>
-                        <form method="POST" action="{{ route('collaborateurs.destroy', $c) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="sg-btn-icon sg-btn-icon--danger" title="Désactiver" aria-label="Désactiver"><i class="bi bi-slash-circle"></i></button>
-                        </form>
+                        @if ($c->statut === 'actif')
+                            <form method="POST" action="{{ route('collaborateurs.destroy', $c) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="sg-btn-icon sg-btn-icon--danger" title="Désactiver" aria-label="Désactiver"><i class="bi bi-slash-circle"></i></button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('collaborateurs.activer', $c) }}">
+                                @csrf
+                                <button type="submit" class="sg-btn-icon sg-btn-icon--ok" title="Réactiver" aria-label="Réactiver"><i class="bi bi-arrow-clockwise"></i></button>
+                            </form>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -81,6 +89,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 {{ $collaborateurs->links() }}
 

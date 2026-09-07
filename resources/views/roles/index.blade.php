@@ -12,6 +12,7 @@
 
 <a href="{{ route('roles.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouveau role</a>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -41,5 +42,6 @@
         @endforeach
     </tbody>
 </table>
+</div>
 
 @endsection

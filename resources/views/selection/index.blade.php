@@ -14,7 +14,7 @@
         <div class="text-muted small">Du {{ $debutSemaine->translatedFormat('l d') }} au {{ $finSemaine->translatedFormat('l d F Y') }}</div>
     </div>
     <div class="d-flex gap-2">
-        <a href="{{ route('selection.index', ['semaine' => $semainePrecedente]) }}" class="btn sg-btn-outline btn-sm">&larr; Semaine precedente</a>
+        <a href="{{ route('selection.index', ['semaine' => $semainePrecedente]) }}" class="btn sg-btn-outline btn-sm">&larr; Semaine précédente</a>
         <a href="{{ route('selection.index', ['semaine' => $semaineSuivante]) }}" class="btn sg-btn-outline btn-sm">Semaine suivante &rarr;</a>
     </div>
 </div>
@@ -73,7 +73,7 @@
                                         <span class="btn sg-btn-primary btn-sm w-100 sg-meal-toggle-on"><i class="bi bi-check2-circle"></i> Sélectionne</span>
                                     </label>
                                 @else
-                                    <button type="button" class="btn btn-outline-secondary btn-sm w-100" disabled><i class="bi bi-slash-circle"></i> Non disponible</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm w-100" disabled><i class="bi bi-slash-circle"></i> Indisponible</button>
                                 @endif
                             @else
                                 <div class="sg-meal-card-titre text-muted">Aucun repas prevu</div>

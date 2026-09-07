@@ -12,6 +12,7 @@
 
 <a href="{{ route('societes.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouvelle societé</a>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -43,5 +44,6 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 @endsection

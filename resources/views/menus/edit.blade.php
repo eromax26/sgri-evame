@@ -18,6 +18,7 @@
         @csrf
         @method('PUT')
 @endunless
+    <div class="table-responsive">
     <table class="table table-bordered bg-white sg-table">
         <thead>
             <tr>
@@ -78,6 +79,7 @@
             @endforeach
         </tbody>
     </table>
+    </div>
 @unless ($menu->estPublie())
     </form>
 @endunless

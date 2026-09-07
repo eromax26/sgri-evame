@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Collaborateur;
+use App\Models\LigneMenu;
+use App\Models\Menu;
 use App\Models\Plat;
 use App\Models\SelectionRepas;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class TableauBordController extends Controller
@@ -61,7 +64,7 @@ class TableauBordController extends Controller
             });
 
         // Articles sous le seuil minimum
-        $articlesEnAlerte = Article::whereColumn('quantite_stock', '<=', 'seuil_minimum')
+        $articlesEnAlerte = Article::enAlerte()
             ->orderBy('libelle')
             ->get();
 
@@ -74,6 +77,77 @@ class TableauBordController extends Controller
             'tauxFrequentation',
             'platsPopulaires',
             'articlesEnAlerte'
+        ));
+    }
+
+    public function cantine()
+    {
+        // Portions a preparer (toutes les selections du jour, quel que soit leur statut)
+        $portionsAujourdhui = SelectionRepas::whereHas('ligneMenu', fn ($q) => $q->whereDate('date_repas', now()->toDateString()))->count();
+        $portionsDemain = SelectionRepas::whereHas('ligneMenu', fn ($q) => $q->whereDate('date_repas', now()->addDay()->toDateString()))->count();
+
+        // Statut du menu de la semaine en cours
+        $debutSemaine = now()->startOfWeek(Carbon::MONDAY);
+        $menuSemaine = Menu::where('date_debut_semaine', $debutSemaine->toDateString())->first();
+        $joursIncomplets = $menuSemaine ? $menuSemaine->lignesMenu()->whereNull('plat_id')->count() : 0;
+
+        // Articles sous le seuil minimum
+        $articlesEnAlerte = Article::enAlerte()
+            ->orderBy('libelle')
+            ->get();
+
+        // Plats les plus et les moins commandes ce mois.
+        // On part des plats proposes au menu (ligne_menus) et non des selections, pour que
+        // les plats proposes mais jamais consommes apparaissent bien avec un total de 0.
+        $totauxPlats = LigneMenu::leftJoin('selections_repas', function ($jointure) {
+                $jointure->on('selections_repas.ligne_menu_id', '=', 'ligne_menus.id')
+                    ->where('selections_repas.statut', 'consomme');
+            })
+            ->select('ligne_menus.plat_id', DB::raw('COUNT(selections_repas.id) as total'))
+            ->whereNotNull('ligne_menus.plat_id')
+            ->whereRaw("DATE_FORMAT(ligne_menus.date_repas, '%Y-%m') = ?", [now()->format('Y-m')])
+            ->groupBy('ligne_menus.plat_id')
+            ->get();
+
+        $libelles = Plat::whereIn('id', $totauxPlats->pluck('plat_id'))->pluck('libelle', 'id');
+
+        // Un seul classement, du plus au moins commande : avec une dizaine de plats au
+        // catalogue, deux listes inversees de 5 affichaient deux fois le meme contenu.
+        // values() reindexe les cles apres le tri, sinon la numerotation affichee est fausse.
+        $classementPlats = $totauxPlats->sortByDesc('total')->values()->map(fn ($ligne) => [
+            'libelle' => $libelles[$ligne->plat_id] ?? 'Plat supprime',
+            'total' => (int) $ligne->total,
+        ]);
+
+        // Sert d'echelle pour la barre de proportion affichee sur chaque ligne.
+        $maxRepas = (int) $classementPlats->max('total');
+
+        // Previsions des 3 prochains jours
+        $previsions = SelectionRepas::with('ligneMenu.plat')
+            ->whereIn('statut', ['demande', 'imprime'])
+            ->whereHas('ligneMenu', fn ($q) => $q->whereBetween('date_repas', [now()->toDateString(), now()->addDays(2)->toDateString()]))
+            ->get()
+            ->groupBy(fn ($selection) => $selection->ligneMenu->date_repas->toDateString() . '|' . $selection->ligneMenu->plat_id)
+            ->map(function ($selections) {
+                $premiere = $selections->first();
+
+                return [
+                    'date_repas' => $premiere->ligneMenu->date_repas,
+                    'plat' => $premiere->ligneMenu->plat,
+                    'total' => $selections->count(),
+                ];
+            })
+            ->sortBy('date_repas');
+
+        return view('tableau-bord.cantine', compact(
+            'portionsAujourdhui',
+            'portionsDemain',
+            'menuSemaine',
+            'joursIncomplets',
+            'articlesEnAlerte',
+            'classementPlats',
+            'maxRepas',
+            'previsions'
         ));
     }
 }

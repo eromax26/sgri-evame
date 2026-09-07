@@ -21,6 +21,7 @@
     </div>
 </form>
 
+<div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
     <thead>
         <tr>
@@ -40,7 +41,9 @@
                 <td>{{ $article->quantite_stock }}</td>
                 <td>{{ $article->seuil_minimum }}</td>
                 <td>
-                    @if ($article->seuilAtteint())
+                    @if ($article->estEpuise())
+                        <span class="sg-pill sg-pill--critique">Stock épuisé !</span>
+                    @elseif ($article->seuilAtteint())
                         <span class="sg-pill sg-pill--danger">Stock faible</span>
                     @else
                         <span class="sg-pill sg-pill--ok">Normal</span>
@@ -57,6 +60,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 {{ $articles->links() }}
 

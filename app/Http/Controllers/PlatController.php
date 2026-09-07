@@ -85,4 +85,11 @@ class PlatController extends Controller
 
         return redirect()->route('plats.index')->with('success', 'Plat desactive avec succes.');
     }
+
+    public function activer(Plat $plat)
+    {
+        $plat->update(['statut' => 'actif']);
+
+        return redirect()->route('plats.index')->with('success', 'Plat reactive avec succes.');
+    }
 }
