@@ -71,6 +71,7 @@ Route::middleware(['auth', 'role:Ressources Humaines'])->group(function () {
     Route::post('etat-rh/verrouiller', [EtatRhController::class, 'verrouiller'])->name('etat-rh.verrouiller');
     Route::get('etat-rh/export', [EtatRhController::class, 'export'])->name('etat-rh.export');
     Route::get('etat-rh/historique', [EtatRhController::class, 'historique'])->name('etat-rh.historique');
+    Route::get('etat-rh/collaborateur/{collaborateur}', [EtatRhController::class, 'collaborateur'])->name('etat-rh.collaborateur');
 });
 
 Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {

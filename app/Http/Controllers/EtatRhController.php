@@ -113,6 +113,42 @@ class EtatRhController extends Controller
         );
     }
 
+    /**
+     * Detail des repas d'un collaborateur sur une periode : sert a justifier le
+     * montant retenu sur son salaire, ligne par ligne, en cas de contestation.
+     */
+    public function collaborateur(Request $request, Collaborateur $collaborateur)
+    {
+        $periode = $request->input('periode', now()->format('Y-m'));
+
+        // Meme filtre que l'etat mensuel (statut 'consomme') pour que le total
+        // affiche ici corresponde exactement a la ligne de l'etat.
+        $repas = SelectionRepas::with(['ligneMenu', 'plat'])
+            ->where('collaborateur_id', $collaborateur->id)
+            ->where('statut', 'consomme')
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
+            ->get()
+            ->sortByDesc(fn ($selection) => $selection->ligneMenu->date_repas)
+            ->values();
+
+        $totalMontant = $repas->sum('prix');
+
+        // Repas reserves mais jamais retires : n'entrent pas dans la retenue, mais
+        // expliquent l'ecart entre ce que le collaborateur pense devoir et le total.
+        $nbNonRetires = SelectionRepas::where('collaborateur_id', $collaborateur->id)
+            ->whereIn('statut', ['demande', 'imprime'])
+            ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
+            ->count();
+
+        return view('etat-rh.collaborateur', compact(
+            'collaborateur',
+            'repas',
+            'periode',
+            'totalMontant',
+            'nbNonRetires'
+        ));
+    }
+
     public function historique()
     {
         $periodes = SelectionRepas::where('statut', 'consomme')

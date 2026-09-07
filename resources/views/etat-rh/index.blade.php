@@ -34,6 +34,7 @@
             <th>Collaborateur</th>
             <th>Repas consommes</th>
             <th>Montant a retenir</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -43,9 +44,15 @@
                 <td>{{ $ligne['collaborateur']->nom }} {{ $ligne['collaborateur']->prenom }}</td>
                 <td>{{ $ligne['nb_repas'] }}</td>
                 <td>{{ number_format($ligne['montant'], 0, ',', ' ') }} F</td>
+                <td>
+                    <a href="{{ route('etat-rh.collaborateur', ['collaborateur' => $ligne['collaborateur'], 'periode' => $periode]) }}"
+                       class="sg-btn-icon" title="Voir le détail des repas" aria-label="Voir le détail des repas">
+                        <i class="bi bi-list-ul"></i>
+                    </a>
+                </td>
             </tr>
         @empty
-            <tr><td colspan="4" class="text-center text-muted"><i class="bi bi-file-earmark-spreadsheet me-2"></i>Aucune consommation sur cette période.</td></tr>
+            <tr><td colspan="5" class="text-center text-muted"><i class="bi bi-file-earmark-spreadsheet me-2"></i>Aucune consommation sur cette période.</td></tr>
         @endforelse
     </tbody>
 </table>
