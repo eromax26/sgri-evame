@@ -72,7 +72,7 @@ class EtatRhController extends Controller
             ]);
 
         if ($nbVerrouilles === 0) {
-            return back()->with('error', 'Rien a verrouiller : tous les repas consommes de cette periode le sont deja.');
+            return back()->with('error', 'Rien à verrouiller : tous les repas consommés de cette période le sont déjà.');
         }
 
         return redirect()->route('etat-rh.index', ['periode' => $validated['periode']])
@@ -108,7 +108,7 @@ class EtatRhController extends Controller
 
         return XlsxExporter::download(
             "etat-rh-{$periode}.xlsx",
-            ['Matricule', 'Nom', 'Prenom', 'Repas consommes', 'Montant a retenir (FCFA)'],
+            ['Matricule', 'Nom', 'Prénom', 'Repas consommés', 'Montant à retenir (FCFA)'],
             $lignesExport
         );
     }

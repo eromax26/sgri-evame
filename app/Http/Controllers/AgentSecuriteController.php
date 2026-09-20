@@ -101,7 +101,7 @@ class AgentSecuriteController extends Controller
         $selection = SelectionRepas::with('ligneMenu.plat', 'collaborateur')->findOrFail($validated['selection_id']);
 
         if ($selection->statut === 'consomme') {
-            return redirect()->route('agent.verifierForm')->with('error', 'Ce ticket a deja ete utilise.');
+            return redirect()->route('agent.verifierForm')->with('error', 'Ce ticket a déjà été utilisé.');
         }
 
         if ($selection->ligneMenu->date_repas->toDateString() !== now()->toDateString()) {
@@ -109,16 +109,17 @@ class AgentSecuriteController extends Controller
         }
 
         if (! $selection->collaborateur->estActif()) {
-            return redirect()->route('agent.verifierForm')->with('error', 'Le collaborateur est inactif (RG03).');
+            return redirect()->route('agent.verifierForm')->with('error', 'Le collaborateur est inactif.');
         }
 
         $selection->update([
-            'date_retrait' => now(),
-            'prix' => $selection->ligneMenu->plat->prix,
-            'statut' => 'consomme',
+            'date_retrait'       => now(),
+            'prix'               => $selection->ligneMenu->plat->prix,
+            'statut'             => 'consomme',
+            'agent_securite_id'  => Auth::id(),
         ]);
 
-        return redirect()->route('agent.verifierForm')->with('success', 'Acces autorise. Le collaborateur peut entrer.');
+        return redirect()->route('agent.verifierForm')->with('success', 'Acces autorisé. Le collaborateur peut entrer.');
     }
 
     public function journalPassages(Request $request)

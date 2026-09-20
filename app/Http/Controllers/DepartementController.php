@@ -31,7 +31,7 @@ class DepartementController extends Controller
 
         Departement::create($validated);
 
-        return redirect()->route('departements.index')->with('success', 'Departement cree avec succes.');
+        return redirect()->route('departements.index')->with('success', 'Département créé avec succès.');
     }
 
     public function edit(Departement $departement)
@@ -50,17 +50,17 @@ class DepartementController extends Controller
 
         $departement->update($validated);
 
-        return redirect()->route('departements.index')->with('success', 'Departement modifie avec succes.');
+        return redirect()->route('departements.index')->with('success', 'Département modifié avec succès.');
     }
 
     public function destroy(Departement $departement)
     {
         if ($departement->collaborateurs()->exists()) {
-            return back()->with('error', 'Impossible de supprimer un departement qui a des collaborateurs.');
+            return back()->with('error', 'Impossible de supprimer un département qui a des collaborateurs.');
         }
 
         $departement->delete();
 
-        return redirect()->route('departements.index')->with('success', 'Departement supprime avec succes.');
+        return redirect()->route('departements.index')->with('success', 'Département supprimé avec succès.');
     }
 }

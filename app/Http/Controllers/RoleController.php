@@ -30,7 +30,7 @@ class RoleController extends Controller
 
         Role::create($validated);
 
-        return redirect()->route('roles.index')->with('success', 'Role cree avec succes.');
+        return redirect()->route('roles.index')->with('success', 'Role créé avec succès.');
     }
 
     public function edit(Role $role)
@@ -47,18 +47,18 @@ class RoleController extends Controller
 
         $role->update($validated);
 
-        return redirect()->route('roles.index')->with('success', 'Role modifie avec succes.');
+        return redirect()->route('roles.index')->with('success', 'Role modifié avec succès.');
     }
 
     public function destroy(Role $role)
     {
         if ($role->acces()->exists()) {
-            return back()->with('error', 'Impossible de supprimer un role encore attribue a des collaborateurs.');
+            return back()->with('error', 'Impossible de supprimer un role encore attribué à des collaborateurs.');
         }
 
         $role->delete();
 
-        return redirect()->route('roles.index')->with('success', 'Role supprime avec succes.');
+        return redirect()->route('roles.index')->with('success', 'Role supprimé avec succès.');
     }
 
     // Page dediee : gerer les roles d'un collaborateur precis
@@ -81,7 +81,7 @@ class RoleController extends Controller
             ->exists();
 
         if ($dejaAttribue) {
-            return back()->with('error', 'Ce role est deja attribue a ce collaborateur.');
+            return back()->with('error', 'Ce role est déjà attribué à ce collaborateur.');
         }
 
         Acces::create([
@@ -90,13 +90,13 @@ class RoleController extends Controller
             'date_attribution' => now(),
         ]);
 
-        return back()->with('success', 'Role attribue avec succes.');
+        return back()->with('success', 'Role attribué avec succès.');
     }
 
     public function retirer(Acces $acces)
     {
         $acces->delete();
 
-        return back()->with('success', 'Role retire avec succes.');
+        return back()->with('success', 'Role retiré avec succès.');
     }
 }

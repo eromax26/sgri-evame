@@ -33,6 +33,6 @@ class ProfilController extends Controller
             'password' => $validated['nouveau_mot_de_passe'],
         ]);
 
-        return back()->with('success', 'Mot de passe modifie avec succes.');
+        return back()->with('success', 'Mot de passe modifié avec succès.');
     }
 }

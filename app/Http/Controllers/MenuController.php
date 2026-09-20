@@ -37,7 +37,7 @@ class MenuController extends Controller
 
         if ($existant) {
             return redirect()->route('menus.edit', $existant)
-                ->with('error', 'Un menu existe deja pour cette semaine, vous avez ete redirige vers son edition.');
+                ->with('error', 'Un menu existe déjà pour cette semaine, vous avez été redirigé vers son édition.');
         }
 
         $platParDefaut = Plat::where('statut', 'actif')->first();
@@ -61,7 +61,7 @@ class MenuController extends Controller
             return $menu;
         });
 
-        return redirect()->route('menus.edit', $menu)->with('success', 'Menu cree. Choisissez maintenant un plat pour chaque jour.');
+        return redirect()->route('menus.edit', $menu)->with('success', 'Menu créé. Choisissez maintenant un plat pour chaque jour.');
     }
 
     public function edit(Menu $menu)
@@ -85,7 +85,7 @@ class MenuController extends Controller
             }
         });
 
-        return redirect()->route('menus.edit', $menu)->with('success', 'Menu enregistre.');
+        return redirect()->route('menus.edit', $menu)->with('success', 'Menu enregistré.');
     }
 
     public function remplacerPlat(Request $request, Menu $menu, LigneMenu $ligne)
@@ -97,11 +97,11 @@ class MenuController extends Controller
         }
 
         if ($ligne->date_repas->toDateString() < now()->toDateString()) {
-            return back()->with('error', 'Ce jour est deja passe, le plat ne peut plus etre change.');
+            return back()->with('error', 'Ce jour est déjà passé, le plat ne peut plus être changé.');
         }
 
         if ($ligne->selections()->exists()) {
-            return back()->with('error', 'Des collaborateurs ont deja selectionne ce repas, le plat ne peut plus etre change.');
+            return back()->with('error', 'Des collaborateurs ont déjà sélectionné ce repas, le plat ne peut plus être changé.');
         }
 
         $validated = $request->validate([
@@ -110,7 +110,7 @@ class MenuController extends Controller
 
         $ligne->update(['plat_id' => $validated['plat_id']]);
 
-        return redirect()->route('menus.edit', $menu)->with('success', 'Plat remplace pour le ' . $ligne->date_repas->translatedFormat('l d/m/Y') . '.');
+        return redirect()->route('menus.edit', $menu)->with('success', 'Plat remplacé pour le ' . $ligne->date_repas->translatedFormat('l d/m/Y') . '.');
     }
 
     public function publier(Menu $menu)
@@ -123,13 +123,13 @@ class MenuController extends Controller
 
         $menu->update(['statut_publication' => 'publie']);
 
-        return redirect()->route('menus.index')->with('success', 'Menu publie avec succes.');
+        return redirect()->route('menus.index')->with('success', 'Menu publié avec succès.');
     }
 
     public function destroy(Menu $menu)
     {
         if ($menu->estPublie()) {
-            return back()->with('error', 'Un menu publie ne peut pas etre supprime.');
+            return back()->with('error', 'Un menu publié ne peut pas être supprimé.');
         }
 
         DB::transaction(function () use ($menu) {
@@ -137,7 +137,7 @@ class MenuController extends Controller
             $menu->delete();
         });
 
-        return redirect()->route('menus.index')->with('success', 'Menu brouillon supprime.');
+        return redirect()->route('menus.index')->with('success', 'Menu brouillon supprimé .');
     }
 
     public function previsions()

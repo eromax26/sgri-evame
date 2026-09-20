@@ -47,7 +47,7 @@ class PlatController extends Controller
 
         Plat::create($validated);
 
-        return redirect()->route('plats.index')->with('success', 'Plat cree avec succes.');
+        return redirect()->route('plats.index')->with('success', 'Plat créé avec succès.');
     }
 
     public function edit(Plat $plat)
@@ -76,20 +76,20 @@ class PlatController extends Controller
 
         $plat->update($validated);
 
-        return redirect()->route('plats.index')->with('success', 'Plat modifie avec succes.');
+        return redirect()->route('plats.index')->with('success', 'Plat modifié avec succès.');
     }
 
     public function destroy(Plat $plat)
     {
         $plat->update(['statut' => 'inactif']);
 
-        return redirect()->route('plats.index')->with('success', 'Plat desactive avec succes.');
+        return redirect()->route('plats.index')->with('success', 'Plat désactivé avec succès.');
     }
 
     public function activer(Plat $plat)
     {
         $plat->update(['statut' => 'actif']);
 
-        return redirect()->route('plats.index')->with('success', 'Plat reactive avec succes.');
+        return redirect()->route('plats.index')->with('success', 'Plat réactivé avec succès.');
     }
 }

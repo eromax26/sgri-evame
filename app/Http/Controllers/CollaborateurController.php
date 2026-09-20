@@ -111,7 +111,7 @@ public function update(Request $request, Collaborateur $collaborateur)
     $collaborateur->update($validated);
 
     return redirect()->route('collaborateurs.index')
-        ->with('success', 'Collaborateur modifie avec succes.');
+        ->with('success', 'Collaborateur modifié avec succès.');
 }
 
     public function destroy(Collaborateur $collaborateur)
@@ -120,7 +120,7 @@ public function update(Request $request, Collaborateur $collaborateur)
         $collaborateur->update(['statut' => 'inactif']);
 
         return redirect()->route('collaborateurs.index')
-            ->with('success', 'Collaborateur desactive avec succes.');
+            ->with('success', 'Collaborateur désactivé avec succès.');
     }
 
     public function activer(Collaborateur $collaborateur)
@@ -128,6 +128,6 @@ public function update(Request $request, Collaborateur $collaborateur)
         $collaborateur->update(['statut' => 'actif', 'tentatives_echouees' => 0]);
 
         return redirect()->route('collaborateurs.index')
-            ->with('success', 'Collaborateur reactive avec succes.');
+            ->with('success', 'Collaborateur réactivé avec succès.');
     }
 }

@@ -28,7 +28,7 @@ class SocieteController extends Controller
 
         Societe::create($validated);
 
-        return redirect()->route('societes.index')->with('success', 'Societe creee avec succes.');
+        return redirect()->route('societes.index')->with('success', 'Societé créée avec succès.');
     }
 
     public function edit(Societe $societe)
@@ -45,17 +45,17 @@ class SocieteController extends Controller
 
         $societe->update($validated);
 
-        return redirect()->route('societes.index')->with('success', 'Societe modifiee avec succes.');
+        return redirect()->route('societes.index')->with('success', 'Societé modifiée avec succès.');
     }
 
     public function destroy(Societe $societe)
     {
         if ($societe->departements()->exists()) {
-            return back()->with('error', 'Impossible de supprimer une societe qui a des departements.');
+            return back()->with('error', 'Impossible de supprimer une societé qui a des départements.');
         }
 
         $societe->delete();
 
-        return redirect()->route('societes.index')->with('success', 'Societe supprimee avec succes.');
+        return redirect()->route('societes.index')->with('success', 'Societé supprimée avec succès.');
     }
 }

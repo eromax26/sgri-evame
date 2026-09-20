@@ -37,7 +37,7 @@ class ArticleController extends Controller
 
         Article::create($validated);
 
-        return redirect()->route('articles.index')->with('success', 'Article cree avec succes.');
+        return redirect()->route('articles.index')->with('success', 'Article créé avec succès.');
     }
 
     public function edit(Article $article)
@@ -55,6 +55,6 @@ class ArticleController extends Controller
 
         $article->update($validated);
 
-        return redirect()->route('articles.index')->with('success', 'Article modifie avec succes.');
+        return redirect()->route('articles.index')->with('success', 'Article modifié avec succès.');
     }
 }
