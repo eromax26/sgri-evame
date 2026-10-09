@@ -5,64 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\SelectionRepas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class AgentSecuriteController extends Controller
 {
-    public function demandesEnAttente()
-    {
-        $demandes = SelectionRepas::with('ligneMenu.plat', 'collaborateur')
-            ->where('statut', 'demande')
-            ->get()
-            ->sortBy(fn ($selection) => $selection->ligneMenu->date_repas)
-            ->values();
+    // L'agent ne fait qu'un seul geste : valider le passage. La consultation des
+    // demandes et l'impression en lot ont ete supprimees : le ticket est emis des
+    // la selection du repas, et son impression reste facultative.
 
-        return view('agent-securite.demandes', compact('demandes'));
-    }
-
-    public function imprimer(Request $request)
-    {
-        $validated = $request->validate([
-            'lignes' => ['required', 'array', 'min:1'],
-            'lignes.*' => ['exists:selections_repas,id'],
-            'format' => ['required', 'in:thermique,a4'],
-        ]);
-
-        $agent = Auth::user();
-        $idsImprimes = [];
-
-        foreach ($validated['lignes'] as $selectionId) {
-            $selection = SelectionRepas::where('id', $selectionId)
-                ->where('statut', 'demande')
-                ->first();
-
-            if ($selection) {
-                $selection->update([
-                    'numero_ticket' => 'TCK-' . Str::upper(Str::random(8)),
-                    'date_impression' => now(),
-                    'agent_securite_id' => $agent->id,
-                    'statut' => 'imprime',
-                ]);
-                $idsImprimes[] = $selection->id;
-            }
-        }
-
-        if (count($idsImprimes) === 0) {
-            return back()->with('error', 'Aucun ticket a imprimer.');
-        }
-
-        $tickets = SelectionRepas::with('ligneMenu.plat', 'collaborateur')
-            ->whereIn('id', $idsImprimes)
-            ->get()
-            ->sortBy(fn ($selection) => $selection->ligneMenu->date_repas)
-            ->values();
-
-        if ($validated['format'] === 'thermique') {
-            return view('agent-securite.tickets-thermique', compact('tickets'));
-        }
-
-        return view('agent-securite.tickets-a4', compact('tickets'));
-    }
     public function verifierForm(Request $request)
     {
         $date = $request->input('date', now()->toDateString());

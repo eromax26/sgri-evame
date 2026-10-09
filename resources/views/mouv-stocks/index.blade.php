@@ -10,7 +10,7 @@
 
 <h5 class="sg-page-title mb-4"><i class="bi bi-arrow-left-right"></i>Mouvements de stock</h5>
 
-<a href="{{ route('mouv-stocks.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-plus-lg"></i> Nouveau mouvement</a>
+<a href="{{ route('mouv-stocks.create') }}" class="btn sg-btn-primary btn-sm mb-3"><i class="bi bi-box-arrow-up"></i> Nouvelle sortie de stock</a>
 
 <div class="table-responsive">
 <table class="table table-striped bg-white sg-table">
@@ -21,6 +21,7 @@
             <th>Type</th>
             <th>Quantite</th>
             <th>Motif / Prix</th>
+            <th>Origine</th>
             <th>Enregistre par</th>
         </tr>
     </thead>
@@ -28,26 +29,38 @@
         @forelse ($mouvements as $mouv)
             <tr>
                 <td>{{ $mouv->date_mouvement->format('d/m/Y') }}</td>
-                <td>{{ $mouv->article->libelle }}</td>
+                <td><a href="{{ route('articles.show', $mouv->article) }}" class="text-decoration-none">{{ $mouv->article->libelle }}</a></td>
                 <td>
-                    @if ($mouv->type_mouvement === 'entree')
-                        <span class="sg-pill sg-pill--ok">Entree</span>
+                    @if ($mouv->est_entree)
+                        <span class="sg-pill sg-pill--ok">Entrée</span>
                     @else
                         <span class="sg-pill sg-pill--danger">Sortie</span>
                     @endif
                 </td>
                 <td>{{ $mouv->quantite }} {{ $mouv->article->unite_mesure }}</td>
                 <td>
-                    @if ($mouv->type_mouvement === 'entree')
+                    @if ($mouv->est_entree)
                         {{ $mouv->prix_achat ? number_format($mouv->prix_achat, 0, ',', ' ') . ' F' : '—' }}
                     @else
                         {{ $mouv->motif_sortie ?? '—' }}
                     @endif
                 </td>
+                <td>
+                    @if ($mouv->est_lie_a_commande)
+                        <small>
+                            <a href="{{ route('commandes.show', $mouv->commande_id) }}" class="text-decoration-none">Cmd #{{ $mouv->commande_id }}</a>
+                            @if ($mouv->ligne_commande_id)
+                                <span class="text-muted">- Ligne #{{ $mouv->ligne_commande_id }}</span>
+                            @endif
+                        </small>
+                    @else
+                        <small class="text-muted">Saisie manuelle</small>
+                    @endif
+                </td>
                 <td>{{ $mouv->collaborateur->nom }} {{ $mouv->collaborateur->prenom }}</td>
             </tr>
         @empty
-            <tr><td colspan="6" class="text-center text-muted"><i class="bi bi-arrow-left-right me-2"></i>Aucun mouvement enregistre.</td></tr>
+            <tr><td colspan="7" class="text-center text-muted"><i class="bi bi-arrow-left-right me-2"></i>Aucun mouvement enregistre.</td></tr>
         @endforelse
     </tbody>
 </table>

@@ -34,11 +34,7 @@
                     @endif
                 </td>
                 <td>
-                    @if ($ticket->statut === 'demande')
-                        <span class="sg-pill sg-pill--warn">En attente d'impression</span>
-                    @else
-                        <span class="sg-pill sg-pill--ok">Ticket prèt à retirer</span>
-                    @endif
+                    <span class="sg-pill sg-pill--ok">Ticket prèt à retirer</span>
                 </td>
                 <td>
                     <a href="{{ route('selection.imprimerTicket', $ticket) }}" target="_blank" class="btn btn-sm sg-btn-outline">
@@ -54,7 +50,8 @@
 </div>
 
 <p class="text-muted small">
-    Presentez votre ticket imprimé à l'agent de sécurité au hall d'entrée de la cantine, le jour du repas.
+    L'impression est facultative : votre ticket est valable des la selection du repas. Presentez-le
+    sur votre telephone ou imprimez-le a l'agent de securite au hall d'entree de la cantine, le jour du repas.
 </p>
 
 @endsection

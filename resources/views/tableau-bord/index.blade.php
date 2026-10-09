@@ -47,11 +47,7 @@
             <div class="card-header bg-white sg-card-header"><i class="bi bi-ticket-perforated"></i>Suivi des tickets</div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Demandes en attente d'impression</span>
-                    <span class="sg-pill sg-pill--warn">{{ $ticketsEnAttente }}</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span>Tickets imprimés non retirés</span>
+                    <span>Tickets emis, non retires</span>
                     <span class="sg-pill sg-pill--info">{{ $ticketsNonRetires }}</span>
                 </div>
             </div>

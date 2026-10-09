@@ -101,7 +101,10 @@ class SelectionController extends Controller
                         'ligne_menu_id' => $ligne->id,
                         'collaborateur_id' => $collaborateur->id,
                         'date_selection' => now(),
-                        'statut' => 'demande',
+                        // Le ticket est emis des la selection : le collaborateur peut
+                        // valider son passage sans avoir a imprimer quoi que ce soit.
+                        'numero_ticket' => 'TCK-' . Str::upper(Str::random(8)),
+                        'statut' => 'imprime',
                     ]);
                 } catch (QueryException $e) {
                     // Contrainte unique (ligne_menu_id, collaborateur_id) : deja selectionne entre-temps.
@@ -117,7 +120,7 @@ class SelectionController extends Controller
         }
 
         return redirect()->route('selection.index')
-            ->with('success', "{$nbValidees} repas selectionne(s). Votre demande de ticket a ete transmise a l'Agent de securite.");
+            ->with('success', "{$nbValidees} repas selectionne(s). Votre ticket est disponible : presentez-le a l'Agent de securite, le jour du repas.");
     }
 
     public function historique(Request $request)
@@ -144,7 +147,7 @@ class SelectionController extends Controller
 
         $tickets = SelectionRepas::with('ligneMenu.plat')
             ->where('collaborateur_id', $collaborateur->id)
-            ->whereIn('statut', ['demande', 'imprime'])
+            ->where('statut', 'imprime')
             ->get()
             ->sortBy(fn ($selection) => $selection->ligneMenu->date_repas)
             ->values();
@@ -152,17 +155,15 @@ class SelectionController extends Controller
         return view('selection.tickets', compact('tickets'));
     }
 
+    // L'impression est facultative : le ticket est deja valide des la selection.
+    // On se contente de tracer le premier tirage, sans toucher au numero ni au statut.
     public function imprimerTicket(SelectionRepas $selection)
     {
         abort_unless($selection->collaborateur_id === Auth::id(), 403);
-        abort_unless(in_array($selection->statut, ['demande', 'imprime']), 403);
+        abort_if($selection->statut !== 'imprime', 403);
 
-        if ($selection->statut === 'demande') {
-            $selection->update([
-                'numero_ticket' => 'TCK-' . Str::upper(Str::random(8)),
-                'date_impression' => now(),
-                'statut' => 'imprime',
-            ]);
+        if (!$selection->date_impression) {
+            $selection->update(['date_impression' => now()]);
         }
 
         $selection->load('ligneMenu.plat', 'collaborateur');

@@ -45,6 +45,18 @@ class ArticleController extends Controller
         return view('articles.edit', compact('article'));
     }
 
+    // Historique des mouvements de stock d'un article (entrees des achats et sorties cuisine)
+    public function show(Article $article)
+    {
+        $mouvements = $article->mouvements()
+            ->with('collaborateur', 'commande')
+            ->orderBy('date_mouvement', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(20);
+
+        return view('articles.show', compact('article', 'mouvements'));
+    }
+
     public function update(Request $request, Article $article)
     {
         $validated = $request->validate([

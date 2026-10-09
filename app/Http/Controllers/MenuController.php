@@ -146,7 +146,7 @@ class MenuController extends Controller
         $fin = now()->addDays(6)->toDateString();
 
         $previsions = SelectionRepas::with('ligneMenu.plat')
-            ->whereIn('statut', ['demande', 'imprime'])
+            ->whereIn('statut', ['imprime', 'consomme'])
             ->whereHas('ligneMenu', fn ($q) => $q->whereBetween('date_repas', [$debut, $fin]))
             ->get()
             ->groupBy(fn ($selection) => $selection->ligneMenu->date_repas->toDateString() . '|' . $selection->ligneMenu->plat_id)
@@ -158,7 +158,7 @@ class MenuController extends Controller
                     'plat' => $premiere->ligneMenu->plat,
                     'total' => $selections->count(),
                     'imprimes' => $selections->where('statut', 'imprime')->count(),
-                    'en_attente' => $selections->where('statut', 'demande')->count(),
+                    'consommes' => $selections->where('statut', 'consomme')->count(),
                 ];
             })
             ->sortBy('date_repas');

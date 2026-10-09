@@ -50,6 +50,13 @@ return new class extends Migration
                 ]);
             });
 
+        // MySQL retire ces colonnes (et leurs index) en place. SQLite (jeu de
+        // tests) refuse de supprimer une colonne liee a une cle etrangere ou a un
+        // index : on les y laisse, sans consequence pour l'application.
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         Schema::table('ligne_menus', function (Blueprint $table) {
             $table->dropForeign(['collaborateur_id']);
             $table->dropForeign(['agent_securite_id']);
@@ -70,18 +77,20 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('ligne_menus', function (Blueprint $table) {
-            $table->foreignId('collaborateur_id')->nullable()->constrained('collaborateurs')->onDelete('set null');
-            $table->foreignId('agent_securite_id')->nullable()->constrained('collaborateurs')->onDelete('set null');
-            $table->dateTime('date_selection')->nullable();
-            $table->dateTime('date_impression')->nullable();
-            $table->dateTime('date_retrait')->nullable();
-            $table->decimal('prix', 10, 2)->nullable();
-            $table->string('statut')->default('prevu');
-            $table->string('numero_ticket')->nullable()->unique();
-            $table->string('periode_facturation', 7)->nullable();
-            $table->string('statut_facturation')->default('non_facture');
-        });
+        if (DB::getDriverName() === 'mysql') {
+            Schema::table('ligne_menus', function (Blueprint $table) {
+                $table->foreignId('collaborateur_id')->nullable()->constrained('collaborateurs')->onDelete('set null');
+                $table->foreignId('agent_securite_id')->nullable()->constrained('collaborateurs')->onDelete('set null');
+                $table->dateTime('date_selection')->nullable();
+                $table->dateTime('date_impression')->nullable();
+                $table->dateTime('date_retrait')->nullable();
+                $table->decimal('prix', 10, 2)->nullable();
+                $table->string('statut')->default('prevu');
+                $table->string('numero_ticket')->nullable()->unique();
+                $table->string('periode_facturation', 7)->nullable();
+                $table->string('statut_facturation')->default('non_facture');
+            });
+        }
 
         DB::table('selections_repas')
             ->orderBy('id')

@@ -87,7 +87,7 @@ class LoginController extends Controller
         }
 
         if ($collaborateur->aLeRole('Agent de securite')) {
-            return route('agent.demandes');
+            return route('agent.verifierForm');
         }
 
         if ($collaborateur->aLeRole('Ressources Humaines')) {

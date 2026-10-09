@@ -8,6 +8,7 @@ use App\Http\Controllers\CollaborateurController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PlatController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\RechercheController;
 use App\Http\Controllers\SelectionController;
 use App\Http\Controllers\AgentSecuriteController;
 use App\Http\Controllers\SocieteController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\EtatRhController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\MouvStockController;
+use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\TableauBordController;
 use App\Http\Controllers\ProfilController;
 
@@ -42,8 +44,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'role:Agent de securite'])->group(function () {
-    Route::get('agent-securite/demandes', [AgentSecuriteController::class, 'demandesEnAttente'])->name('agent.demandes');
-    Route::post('agent-securite/imprimer', [AgentSecuriteController::class, 'imprimer'])->name('agent.imprimer');
     Route::get('agent-securite/verifier', [AgentSecuriteController::class, 'verifierForm'])->name('agent.verifierForm');
     Route::post('agent-securite/confirmer', [AgentSecuriteController::class, 'confirmerRetrait'])->name('agent.confirmerRetrait');
     Route::get('agent-securite/journal', [AgentSecuriteController::class, 'journalPassages'])->name('agent.journal');
@@ -56,6 +56,9 @@ Route::middleware(['auth', 'role:Administrateur DSII'])->group(function () {
 
     Route::resource('collaborateurs', CollaborateurController::class);
     Route::post('collaborateurs/{collaborateur}/activer', [CollaborateurController::class, 'activer'])->name('collaborateurs.activer');
+
+    // Recherche dynamique sur la liste des collaborateurs (meme role que la page)
+    Route::get('recherche/collaborateurs', [RechercheController::class, 'collaborateurs'])->name('recherche.collaborateurs');
 
     Route::resource('roles', RoleController::class);
     Route::post('collaborateurs/{collaborateur}/acces', [RoleController::class, 'attribuer'])->name('acces.attribuer');
@@ -87,9 +90,14 @@ Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {
     Route::put('menus/{menu}/lignes', [MenuController::class, 'updateLignes'])->name('menus.updateLignes');
     Route::put('menus/{menu}/lignes/{ligne}/plat', [MenuController::class, 'remplacerPlat'])->name('menus.remplacerPlat');
 
+    Route::get('recherche/articles', [RechercheController::class, 'articles'])->name('recherche.articles');
+    Route::get('recherche/plats', [RechercheController::class, 'plats'])->name('recherche.plats');
+    Route::get('recherche/commandes', [RechercheController::class, 'commandes'])->name('recherche.commandes');
+
     Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('articles/create', [ArticleController::class, 'create'])->name('articles.create');
     Route::post('articles', [ArticleController::class, 'store'])->name('articles.store');
+    Route::get('articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
     Route::get('articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
     Route::put('articles/{article}', [ArticleController::class, 'update'])->name('articles.update');
     Route::get('previsions', [MenuController::class, 'previsions'])->name('menus.previsions');
@@ -97,6 +105,26 @@ Route::middleware(['auth', 'role:Responsable cantine'])->group(function () {
     Route::get('mouv-stocks', [MouvStockController::class, 'index'])->name('mouv-stocks.index');
     Route::get('mouv-stocks/create', [MouvStockController::class, 'create'])->name('mouv-stocks.create');
     Route::post('mouv-stocks', [MouvStockController::class, 'store'])->name('mouv-stocks.store');
+
+    // Commandes
+    Route::get('commandes', [CommandeController::class, 'index'])->name('commandes.index');
+    Route::get('commandes/create', [CommandeController::class, 'create'])->name('commandes.create');
+    Route::post('commandes', [CommandeController::class, 'store'])->name('commandes.store');
+    Route::get('commandes/{commande}', [CommandeController::class, 'show'])->name('commandes.show');
+    Route::get('commandes/{commande}/edit', [CommandeController::class, 'edit'])->name('commandes.edit');
+    Route::delete('commandes/{commande}', [CommandeController::class, 'destroy'])->name('commandes.destroy');
+    Route::post('commandes/{commande}/valider', [CommandeController::class, 'valider'])->name('commandes.valider');
+    Route::post('commandes/{commande}/annuler', [CommandeController::class, 'annuler'])->name('commandes.annuler');
+    Route::post('commandes/{commande}/cloturer', [CommandeController::class, 'cloturer'])->name('commandes.cloturer');
+
+    // Lignes de commande
+    Route::post('commandes/{commande}/lignes', [CommandeController::class, 'ajouterLigne'])->name('commandes.lignes.store');
+    Route::put('commandes/{commande}/lignes/{ligne}', [CommandeController::class, 'modifierLigne'])->name('commandes.lignes.update');
+    Route::delete('commandes/{commande}/lignes/{ligne}', [CommandeController::class, 'supprimerLigne'])->name('commandes.lignes.destroy');
+
+    // Achats / livraisons
+    Route::post('commandes/{commande}/achats', [CommandeController::class, 'enregistrerAchats'])->name('commandes.achats');
+    Route::post('commandes/{commande}/lignes/{ligne}/livrer', [CommandeController::class, 'livrerLigne'])->name('commandes.lignes.livrer');
 });
 
 Route::middleware(['auth', 'role:Direction Generale,Administrateur DSII,Responsable cantine,Ressources Humaines'])->group(function () {

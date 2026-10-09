@@ -33,12 +33,7 @@
                 </td>
                 <td>{{ $p['plat']->libelle }}</td>
                 <td><span class="sg-badge-count" style="font-size: 13px;">{{ $p['total'] }}</span></td>
-                <td class="small text-muted">
-                    {{ $p['imprimes'] }} ticket(s) imprime(s)
-                    @if ($p['en_attente'] > 0)
-                        - {{ $p['en_attente'] }} en attente d'impression
-                    @endif
-                </td>
+                <td class="small text-muted">{{ $p['imprimes'] }} ticket(s) emis</td>
             </tr>
         @empty
             <tr><td colspan="4" class="text-center text-muted"><i class="bi bi-graph-up-arrow me-2"></i>Aucune reservation pour les 7 prochains jours.</td></tr>

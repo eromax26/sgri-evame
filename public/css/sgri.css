@@ -473,6 +473,12 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 820px;
 }
 
+/* Carte pleine largeur : listes et tableaux larges (bon de commande, etc.).
+   A utiliser a la place de .sg-card-form pour les vues a plusieurs colonnes. */
+.sg-card-wide {
+    max-width: none;
+}
+
 /* ---------- Tableau "Mes informations" (profil) ---------- */
 .sg-table-info td {
     font-size: 13.5px;
@@ -668,6 +674,49 @@ h1, h2, h3, h4, h5, h6 {
 
 .sg-table.table-striped {
     --bs-table-striped-bg: var(--sg-surface-2);
+}
+
+/* ---------- Tableau detaille d'une commande (10 colonnes) ---------- */
+/* Les colonnes chiffrees ne doivent jamais revenir a la ligne : les montants
+   du type "425 000 F" restaient coupes sur deux lignes. Seule la 1re colonne
+   (Article + commentaire) peut passer a la ligne. */
+.sg-table.sg-table-commande thead th,
+.sg-table.sg-table-commande tbody td,
+.sg-table.sg-table-commande tfoot td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.sg-table.sg-table-commande tbody td,
+.sg-table.sg-table-commande tfoot td {
+    white-space: nowrap;
+}
+
+.sg-table.sg-table-commande tbody td:first-child {
+    white-space: normal;
+    min-width: 160px;
+}
+
+.sg-table.sg-table-commande tfoot td {
+    border-top: 2px solid var(--sg-line);
+}
+
+.sg-table.sg-table-commande tbody tr:last-child td {
+    border-bottom: 1px solid var(--sg-line-soft);
+}
+
+/* Impression : le tableau doit tenir sur une feuille A4 portrait. */
+@media print {
+    .sg-table.sg-table-commande thead th,
+    .sg-table.sg-table-commande tbody td,
+    .sg-table.sg-table-commande tfoot td {
+        font-size: 10.5px;
+        padding: 5px 6px;
+    }
+
+    .sg-table.sg-table-commande thead th {
+        letter-spacing: .04em;
+    }
 }
 
 /* ---------- Pastilles de statut (à réutiliser sur les futures vues) ---------- */

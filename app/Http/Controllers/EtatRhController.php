@@ -135,8 +135,10 @@ class EtatRhController extends Controller
 
         // Repas reserves mais jamais retires : n'entrent pas dans la retenue, mais
         // expliquent l'ecart entre ce que le collaborateur pense devoir et le total.
+        // Le ticket est emis des la selection : l'impression n'est plus un prerequis.
+        // Seul le passage consomme retire lselection du compte du collaborateur.
         $nbNonRetires = SelectionRepas::where('collaborateur_id', $collaborateur->id)
-            ->whereIn('statut', ['demande', 'imprime'])
+            ->where('statut', 'imprime')
             ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [$periode]))
             ->count();
 

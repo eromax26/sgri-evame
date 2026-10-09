@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="{{ asset('css/sgri.css') }}" rel="stylesheet">
+    @stack('styles')
 </head>
 <body>
 
@@ -46,12 +47,12 @@
 
         <div class="sg-nav-title">Gestion du stock</div>
         <a href="{{ route('articles.index') }}" class="sg-nav-link {{ request()->routeIs('articles.*') ? 'sg-active' : '' }}"><i class="bi bi-box-seam sg-nav-icon"></i>Articles</a>
+        <a href="{{ route('commandes.index') }}" class="sg-nav-link {{ request()->routeIs('commandes.*') ? 'sg-active' : '' }}"><i class="bi bi-truck sg-nav-icon"></i>Commandes</a>
         <a href="{{ route('mouv-stocks.index') }}" class="sg-nav-link {{ request()->routeIs('mouv-stocks.*') ? 'sg-active' : '' }}"><i class="bi bi-arrow-left-right sg-nav-icon"></i>Mouvements de stock</a>
     @endif
 
    @if (auth()->user()->aLeRole('Agent de securite'))
         <div class="sg-nav-title">Tickets</div>
-        <a href="{{ route('agent.demandes') }}" class="sg-nav-link {{ request()->routeIs('agent.demandes') ? 'sg-active' : '' }}"><i class="bi bi-inbox sg-nav-icon"></i>Demandes en attente</a>
         <a href="{{ route('agent.verifierForm') }}" class="sg-nav-link {{ request()->routeIs('agent.verifierForm') ? 'sg-active' : '' }}"><i class="bi bi-qr-code-scan sg-nav-icon"></i>Vérifier un ticket</a>
         <a href="{{ route('agent.journal') }}" class="sg-nav-link {{ request()->routeIs('agent.journal') ? 'sg-active' : '' }}"><i class="bi bi-journal-text sg-nav-icon"></i>Journal des passages</a>
     @endif
@@ -138,6 +139,10 @@
         });
     })();
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+@stack('scripts')
 
 </body>
 </html>

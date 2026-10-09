@@ -20,7 +20,7 @@
 </div>
 
 <div class="alert alert-warning py-2 small mb-4">
-    Sélectionnez les repas que vous souhaitez consommer. Une fois votre sélection validée, votre demande de ticket sera transmise à l'agent de sécurité pour impression.
+    Voici les repas disponibles pour cette semaine. Sélectionnez ceux que vous souhaitez consommer.
 </div>
 
 @if (! $menu)
@@ -70,7 +70,7 @@
                                     <label class="sg-meal-toggle-label">
                                         <input type="checkbox" name="lignes[]" value="{{ $ligne->id }}" class="sg-meal-toggle" data-prix="{{ (float) $ligne->plat->prix }}" hidden>
                                         <span class="btn sg-btn-outline-danger btn-sm w-100 sg-meal-toggle-off"><i class="bi bi-plus-circle"></i> Sélectionner ce repas</span>
-                                        <span class="btn sg-btn-primary btn-sm w-100 sg-meal-toggle-on"><i class="bi bi-check2-circle"></i> Sélectionne</span>
+                                        <span class="btn sg-btn-primary btn-sm w-100 sg-meal-toggle-on"><i class="bi bi-check2-circle"></i> Sélectionné</span>
                                     </label>
                                 @else
                                     <button type="button" class="btn btn-outline-secondary btn-sm w-100" disabled><i class="bi bi-slash-circle"></i> Indisponible</button>

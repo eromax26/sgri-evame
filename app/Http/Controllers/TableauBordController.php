@@ -25,10 +25,7 @@ class TableauBordController extends Controller
             ->whereHas('ligneMenu', fn ($q) => $q->whereRaw("DATE_FORMAT(date_repas, '%Y-%m') = ?", [now()->format('Y-m')]))
             ->count();
 
-        // Tickets en attente d'impression
-        $ticketsEnAttente = SelectionRepas::where('statut', 'demande')->count();
-
-        // Tickets imprimes mais pas encore retires
+        // Tickets emis (des la selection) et pas encore retires
         $ticketsNonRetires = SelectionRepas::where('statut', 'imprime')->count();
 
         // Montant total facture ce mois
@@ -71,7 +68,6 @@ class TableauBordController extends Controller
         return view('tableau-bord.index', compact(
             'repasAujourdhui',
             'repasCeMois',
-            'ticketsEnAttente',
             'ticketsNonRetires',
             'montantCeMois',
             'tauxFrequentation',
@@ -124,7 +120,7 @@ class TableauBordController extends Controller
 
         // Previsions des 3 prochains jours
         $previsions = SelectionRepas::with('ligneMenu.plat')
-            ->whereIn('statut', ['demande', 'imprime'])
+            ->whereIn('statut', ['imprime', 'consomme'])
             ->whereHas('ligneMenu', fn ($q) => $q->whereBetween('date_repas', [now()->toDateString(), now()->addDays(2)->toDateString()]))
             ->get()
             ->groupBy(fn ($selection) => $selection->ligneMenu->date_repas->toDateString() . '|' . $selection->ligneMenu->plat_id)
